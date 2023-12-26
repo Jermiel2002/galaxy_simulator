@@ -1,5 +1,7 @@
 #include "BHTree.h"
 
+
+
 //--- Standard includes --------------------------------------------------------
 #include <cstdio>
 #include <cstring>
@@ -11,10 +13,22 @@
 
 //------------------------------------------------------------------------------
 // static variables
+
+/*s_theta est une variable statique qui représente le paramètre 0 de l'algo de barnes hut. Il est utilisé pour
+* décider si un noeud doit être approximé comme une particule unique lors du calcul des forces.*/
 double BHTreeNode::s_theta = 0.9;
+
+/**s_renegades est une tableau dynamique contenant des particules d'un noeud*/
 std::vector<ParticleData> BHTreeNode::s_renegades;
+
+/*s_stat est une structure de type BHTreeNode::DebugStat, qui est une structure utilisé pour stocker des statistiques de débogage.
+il contient seulement un membre _nNumCalc qui représente le nombre total de calculs effectués lors de la simulation*/
 BHTreeNode::DebugStat BHTreeNode::s_stat = {0};
+
 double BHTreeNode::s_gamma = 0;        // gravitational constant is set from the outside
+
+/*s_soft représente le paramètre de softening. Cela ajoute une petite constante pour éviter les singularités
+lorsque deux particules sont très proches. La valeur 0.1*0.1 est utilisée ici, représentant environ 3 années lumière.*/
 double BHTreeNode::s_soft = 0.1 * 0.1; // approx. 3 light year
 
 
@@ -92,7 +106,11 @@ int BHTreeNode::StatGetNumCalc() const
 }
 
 
-/** \brief Returns the number of particles not assigned to any node. */
+/** \brief Returns the number of particles not assigned to any node.
+ * La méthode GetNumRenegades retourne le nombre de particules qui n'ont pas été assignées à un nœud spécifique de l'arbre. Dans le contexte de cet arbre Barnes-Hut, 
+ * lorsqu'une particule ne peut pas être insérée dans un nœud particulier (par exemple, parce que le nœud est déjà occupé par une autre particule ou que la particule se trouve en dehors des limites du nœud), cette particule est ajoutée à un vecteur appelé s_renegades. 
+ * Ainsi, cette méthode renvoie la taille de ce vecteur, ce qui représente le nombre de particules non assignées.
+ */
 int BHTreeNode::GetNumRenegades() const
 {
     return s_renegades.size();

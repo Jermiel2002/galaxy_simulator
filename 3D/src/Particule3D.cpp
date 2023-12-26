@@ -3,6 +3,7 @@
 #include <string>
 #include <cassert>
 #include <cstdlib>
+#include <cmath>
 
 using namespace std;
 
@@ -16,12 +17,12 @@ PosParticule3D::PosParticule3D(double *xCoord, double *yCoord, double *zCoord): 
 }
 
 //codage des constructeurs pour représenter l'état d'une particule dans l'espace
-EtatParticule::EtatParticule(): pos(nullptr), vitesse(nullptr), accelearation(nullptr){};
-EtatParticule::EtatParticule(PosParticule3D *ppos,PosParticule3D *vvitesse, PosParticule3D *aaccelearation): pos(ppos),vitesse(vvitesse),accelearation(aaccelearation)
+EtatParticule::EtatParticule(): pos(nullptr), vitesse(nullptr), acceleration(nullptr){};
+EtatParticule::EtatParticule(PosParticule3D *ppos,PosParticule3D *vvitesse, PosParticule3D *aacceleration): pos(ppos),vitesse(vvitesse),acceleration(aacceleration)
 {
     assert(pos);
     assert(vitesse);
-    assert(accelearation);
+    assert(acceleration);
 };
 
 //codage des constructeurs pour représenter l'état auxiliaire d'une particule dans l'espace
@@ -62,3 +63,26 @@ bool ParticuleData::IsNull() const
 {
     return _pState && _pAuxState;
 }
+
+bool PosParticule3D::ParticuleEgaux(PosParticule3D p1, PosParticule3D p2) 
+    {
+        if(p1.x == p2.x && p1.y == p2.y && p1.z == p2.z)
+            return true;
+        else
+            return false;
+    }
+
+double PosParticule3D::distEntrParticule(PosParticule3D p1, PosParticule3D p2)
+    {
+        return sqrt((p1.x - p2.x)*(p1.x-p2.x) + (p1.y - p2.y)*(p1.y - p2.y) + (p1.z - p2.z)*(p1.z - p2.z));
+    }
+
+/*PosParticule3D PosParticule3D::fusionParticule(PosParticule3D p1, PosParticule3D p2)
+    {
+        return PosParticule3D((p1.x+p2.x) , p1.y+p2.y , p1.z+p2.z);
+    }*/
+
+/*PosParticule3D PosParticule3D::MultiplierParticule(PosParticule3D p, double s)
+    {
+        return PosParticule3D(p.x * s, p.y * s, p.z * s);
+    }*/

@@ -13,10 +13,20 @@ struct PosParticule3D{
         PosParticule3D();
         PosParticule3D(double *x, double *y, double *z);
 
+        //fonctions
+        bool ParticuleEgaux(PosParticule3D p1, PosParticule3D p2); //verifie que deux particules ont la même position
+
+        double distEntrParticule(PosParticule3D p1, PosParticule3D p2); //calcul de la distance euclidienne entre deux points tridimensionnels dans l'espace
+
+        //PosParticule3D fusionParticule(PosParticule3D p1, PosParticule3D p2);
+
+        //PosParticule3D MultiplierParticule(PosParticule3D p, double s);
+        
         //variables
         double *x;
         double *y;
         double *z;
+
 };
 
 /*
@@ -32,7 +42,7 @@ class EtatParticule
 
         PosParticule3D *pos;
         PosParticule3D *vitesse;
-        PosParticule3D *accelearation;
+        PosParticule3D *acceleration;
 };
 
 class EtatAuxiliaire
@@ -62,7 +72,7 @@ class ParticuleData
         ParticuleData(); //constructeur par defaut à initialisé dans le .cpp
         ParticuleData(EtatParticule *pState, EtatAuxiliaire *pAuxState);//Initialise une particule connaissant son etat et son etatAux
         ParticuleData(ParticuleData const& autre);//constructeur de copie simple qui initialise une nouvelle particule en copiant les valeurs des attributs d'une autre paticule existante
-        //ParticuleData &operator = (const ParticuleData &ref); //Opérateur d'affectation utiliser qd on souhaite copier les valeurs d'une particules vers une autre existante
+        ParticuleData &operator = (const ParticuleData &ref); //Opérateur d'affectation utiliser qd on souhaite copier les valeurs d'une particules vers une autre existante
 
         //fonctions
         void Reset(); //réinitialise l'état de l'objet ParticleData
