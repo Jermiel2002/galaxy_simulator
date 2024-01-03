@@ -1,4 +1,4 @@
-#include "NBodyWnd.h"
+#include "../include/NBodyWnd.hpp"
 
 #include <iostream>
 #include <cmath>
@@ -6,10 +6,9 @@
 #include <limits>
 #include <omp.h>
 
-#include "IntegratorRK4.h"
-#include "IntegratorRK5.h"
-#include "IntegratorADB6.h"
-
+#include "../include/IntegratorRK4.hpp"
+#include "../include/IntegratorRK5.hpp"
+#include "../include/IntegratorADB6.hpp"
 
 NBodyWnd::NBodyWnd(int sz, std::string caption)
     :SDLWindow(sz, sz, 30.0, caption)
@@ -48,7 +47,7 @@ void NBodyWnd::Init(int num)
     // OpenGL initialization
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    SetCameraOrientation(Vec3D(0, 1, 0));
+    SetCameraOrientation(PosParticule3D(0, 1, 0));
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -67,12 +66,13 @@ void NBodyWnd::Update()
     if (_bDumpState && ct % 1000000 == 0)
     {
         int num = _pModel->GetDim() / 4;
-        PODState *state = reinterpret_cast<PODState *>(_pSolver->GetState());
+        EtatParticule *state = reinterpret_cast<EtatParticule *>(_pSolver->GetState());
         _outfile << _pSolver->GetTime() << ", ";
         for (int i = 0; i < num; ++i)
         {
-            _outfile << state[i].x << ", "
-                      << state[i].y << ", ";
+            _outfile << state[i].pos->x << ", "
+                    << state[i].pos->y << ", "
+                    << state[i].pos->z << ", ";
         }
         _outfile << std::endl;
     }
@@ -87,7 +87,7 @@ void NBodyWnd::Render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    Vec3D orient;
+    PosParticule3D orient;
     switch (_camOrient)
     {
     case 0:
@@ -105,8 +105,8 @@ void NBodyWnd::Render()
     if (_flags & dspAXIS)
     {
         // Draw axis at position of the first particle
-        const Vec3D &cm = _pModel->GetCenterOfMass();
-        DrawAxis(Vec2D(cm.x, cm.y));
+        const PosParticule3D &cm = _pModel->GetCenterOfMass();
+        DrawAxis(PosParticule3D(cm.x, cm.y,cm.z));
     }
 
     if (_flags & dspTREE)
@@ -131,16 +131,16 @@ void NBodyWnd::DrawBodies()
 {
     assert(_pSolver);
 
-    PODState *state = reinterpret_cast<PODState *>(_pSolver->GetState());
+    EtatParticule *state = reinterpret_cast<EtatParticule *>(_pSolver->GetState());
     //  const PODAuxState *state_aux  = _pModel->GetAuxState();
 
     glColor3f(1, 1, 1);
-    glpoint1MinSize(2); // state_aux[i].mass/10);
-    glBegin(GL_point1MinS);
+    glPointSize(2); // state_aux[i].mass/10);
+    glBegin(GL_POINTS);
 
     for (int i = 0; i < _pModel->GetN(); ++i)
     {
-        glVertex3f(state[i].x, state[i].y, 0.0f);
+        glVertex3f(state[i].pos->x, state[i].pos->y, state[i].pos->z);
     }
 
     glEnd();
@@ -151,44 +151,44 @@ void NBodyWnd::DrawStat()
     double x0 = 10, y0 = 20, dy = 20;
     int line = 0;
 
-    // acquire point1Miner to the root node of the barnes hut tree from the model
-    BHTreeNode *pRoot = _pModel->GetRootNode();
+    // acquire pointer to the root node of the barnes hut tree from the model
+    OctreeNode *pRoot = _pModel->GetRootNode();
 
-    const Vec3D &camPos = GetCamPos(),
+    const PosParticule3D &camPos = GetCamPos(),
                 &camLookAt = GetCamLookAt();
     glColor3f(1, 1, 1);
-    TextOut(x0, y0 + dy * line++, "Number of bodies (outside tree): %d (%d)", pRoot->GetNum(), pRoot->GetNumRenegades());
-    TextOut(x0, y0 + dy * line++, "Theta: %2.1f", pRoot->GetTheta());
-    TextOut(x0, y0 + dy * line++, "FPS: %d", GetFPS());
-    TextOut(x0, y0 + dy * line++, "Time: %2.1f y", _pSolver->GetTime());
-    TextOut(x0, y0 + dy * line++, "Camera: %2.2f, %2.2f, %2.2f", camPos.x, camPos.y, camPos.z);
-    TextOut(x0, y0 + dy * line++, "LookAt: %2.2f, %2.2f, %2.2f", camLookAt.x, camLookAt.y, camLookAt.z);
-    TextOut(x0, y0 + dy * line++, "Field of view: %2.2f pc", GetFOV());
-    TextOut(x0, y0 + dy * line++, "Calculations: %d", pRoot->StatGetNumCalc());
-    TextOut(x0, y0 + dy * line++, "Solver: %s", _pSolver->GetID().c_str());
+    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Number of bodies (outside tree): %d (%d)", pRoot->GetNum(), pRoot->GetNumRenegades());
+    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Theta: %2.1f", pRoot->GetTheta());
+    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "FPS: %d", GetFPS());
+    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Time: %2.1f y", _pSolver->GetTime());
+    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Camera: %2.2f, %2.2f, %2.2f", camPos.x, camPos.y, camPos.z);
+    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "LookAt: %2.2f, %2.2f, %2.2f", camLookAt.x, camLookAt.y, camLookAt.z);
+    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Field of view: %2.2f pc", GetFOV());
+    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Calculations: %d", pRoot->StatGetNumCalc());
+    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Solver: %s", _pSolver->GetID().c_str());
 }
 
 void NBodyWnd::DrawHelp()
 {
     double x0 = 10, y0 = 20, dy = 20;
     int line = 0;
-    Vec3D p;
+    PosParticule3D p;
 
     glColor3f(1, 1, 1);
-    TextOut(x0, y0 + dy * line++, "Keyboard commands");
-    TextOut(x0, y0 + dy * line++, "a     - display axis");
-    TextOut(x0, y0 + dy * line++, "t     - display Barnes Hut tree");
-    TextOut(x0, y0 + dy * line++, "s     - display statistic data");
-    TextOut(x0, y0 + dy * line++, "c     - display center of mass");
-    TextOut(x0, y0 + dy * line++, "b     - display particles");
-    TextOut(x0, y0 + dy * line++, "h     - display help text");
-    TextOut(x0, y0 + dy * line++, "0..1  - Set camera orientation");
-    TextOut(x0, y0 + dy * line++, "pause - halt simulation");
+    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Keyboard commands");
+    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "a     - display axis");
+    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "t     - display Barnes Hut tree");
+    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "s     - display statistic data");
+    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "c     - display center of mass");
+    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "b     - display particles");
+    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "h     - display help text");
+    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "0..1  - Set camera orientation");
+    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "pause - halt simulation");
 }
 
 void NBodyWnd::DrawROI()
 {
-    const Vec3D &cm = _pModel->GetCenterOfMass();
+    const PosParticule3D &cm = _pModel->GetCenterOfMass();
 
     double l = GetFOV() / 20;
     glColor3f(1, 0, 0);
@@ -226,16 +226,19 @@ void NBodyWnd::DrawTree()
             APPROX,   ///< Display only the nodes as they where used for the force calculation
         };
 
-        DrawTree(BHTreeNode *pRoot, EWhat what, int flags, int sz)
+        DrawTree(OctreeNode *pRoot, EWhat what, int flags, int sz)
             : displayFlags(flags)
         {
             DrawNode(pRoot, 0, what, sz);
         }
 
-        void DrawNode(BHTreeNode *pNode, int level, EWhat what, int sz)
+        void DrawNode(OctreeNode *pNode, int level, EWhat what, int sz)
         {
             assert(pNode);
 
+            /**
+             * déterminer la couleur à utiliser pour dessiner le nœud en fonction de son niveau (level) et du type de dessin (what).
+            */
             double col = 1 - level * 0.2;
             switch (what)
             {
@@ -247,36 +250,75 @@ void NBodyWnd::DrawTree()
                 break;
             }
 
-            // Draw node rectangle
+            // Draw node cube
             if (what == COMPLETE ||
                 (what == APPROX && !pNode->WasTooClose()))
             {
-                const Vec2D &min = pNode->GetMin(),
-                            &max = pNode->GetMax();
-                glBegin(GL_LINE_STRIP);
-                glVertex3f(min.x, min.y, 0);
-                glVertex3f(max.x, min.y, 0);
-                glVertex3f(max.x, max.y, 0);
-                glVertex3f(min.x, max.y, 0);
-                glVertex3f(min.x, min.y, 0);
-                glEnd();
+                const Boite cube = pNode->GetBoite();
+                const PosParticule3D &min = cube.point1;
+                const PosParticule3D &max = cube.point2;
 
+                //glBegin(GL_LINE_STRIP);
+                glBegin(GL_QUADS);
+
+                //front face
+                glVertex3f(min.x, min.y, min.z);
+                glVertex3f(max.x, min.y, min.z);
+                glVertex3f(max.x, max.y, min.z);
+                glVertex3f(min.x, max.y, min.z);
+
+                //Back face
+                glVertex3f(min.x,min.y,max.z);
+                glVertex3f(max.x,min.y,max.z);
+                glVertex3f(max.x,max.y,max.z);
+                glVertex3f(min.x,max.y,max.z);
+
+                // Left face
+                glVertex3f(min.x, min.y, min.z);
+                glVertex3f(min.x, max.y, min.z);
+                glVertex3f(min.x, max.y, max.z);
+                glVertex3f(min.x, min.y, max.z);
+
+                // Right face
+                glVertex3f(max.x, min.y, min.z);
+                glVertex3f(max.x, max.y, min.z);
+                glVertex3f(max.x, max.y, max.z);
+                glVertex3f(max.x, min.y, max.z);
+
+                // Top face
+                glVertex3f(min.x, max.y, min.z);
+                glVertex3f(max.x, max.y, min.z);
+                glVertex3f(max.x, max.y, max.z);
+                glVertex3f(min.x, max.y, max.z);
+
+                // Bottom face
+                glVertex3f(min.x, min.y, min.z);
+                glVertex3f(max.x, min.y, min.z);
+                glVertex3f(max.x, min.y, max.z);
+                glVertex3f(min.x, min.y, max.z);
+
+                glEnd();
+            
                 // Draw a cross at the center of mass is the corresponding flag is set
                 if (displayFlags & dspCENTER_OF_MASS && !pNode->IsExternal())
                 {
                     double len = (double)sz / 50 * std::max(1 - level * 0.2, 0.1);
-                    glpoint1MinSize(4);
+                    glPointSize(4);
                     glColor3f(col, 1, col);
 
-                    const Vec2D cm = pNode->GetCenterOfMass();
+                    const PosParticule3D cm = pNode->GetCenterOfMass();
                     glBegin(GL_LINES);
-                    glVertex3f(cm.x - len, cm.y, 0);
-                    glVertex3f(cm.x + len, cm.y, 0);
+                    glVertex3f(cm.x - len, cm.y, cm.z);
+                    glVertex3f(cm.x + len, cm.y, cm.z);
                     glEnd();
                     glBegin(GL_LINES);
-                    glVertex3f(cm.x, cm.y - len, 0);
-                    glVertex3f(cm.x, cm.y + len, 0);
+                    glVertex3f(cm.x, cm.y - len, cm.z);
+                    glVertex3f(cm.x, cm.y + len, cm.z);
+                    glBegin(GL_LINES);
+                    glVertex3f(cm.x, cm.y, cm.z - len);
+                    glVertex3f(cm.x, cm.y, cm.z + len);
                     glEnd();
+
                 }
             }
 
@@ -285,24 +327,24 @@ void NBodyWnd::DrawTree()
             if (what != COMPLETE && !pNode->WasTooClose())
                 return;
 
-            for (int i = 0; i < 4; ++i)
+            for (int i = 0; i < 8; ++i)
             {
-                if (pNode->_quadNode[i])
-                    DrawNode(pNode->_quadNode[i], level + 1, what, sz);
+                if (pNode->_noeudFils[i])
+                    DrawNode(pNode->_noeudFils[i], level + 1, what, sz);
             }
         } // DrawTree::DrawNode
 
         int displayFlags;
     }; // struct DrawTree
 
-    BHTreeNode *pRoot = _pModel->GetRootNode();
+    OctreeNode *pRoot = _pModel->GetRootNode();
     if ((_flags & dspTREE) && (_flags & dspTREE_COMPLETE))
         DrawTree DrawComplete(pRoot, DrawTree::COMPLETE, _flags, GetFOV());
     else if ((_flags & dspTREE) && !(_flags & dspTREE_COMPLETE))
         DrawTree DrawFar(pRoot, DrawTree::APPROX, _flags, GetFOV());
 }
 
-void NBodyWnd::DrawNode(BHTreeNode *pNode, int level)
+void NBodyWnd::DrawNode(OctreeNode *pNode, int level)
 {
     assert(pNode);
     double len = 0.01 * std::max(1 - level * 0.2, 0.1);
@@ -314,38 +356,74 @@ void NBodyWnd::DrawNode(BHTreeNode *pNode, int level)
     else
         glColor3f(col, 1, col);
 
-    const Vec2D &min = pNode->GetMin(),
-                &max = pNode->GetMax();
-    glBegin(GL_LINE_STRIP);
-    glVertex3f(min.x, min.y, 0);
-    glVertex3f(max.x, min.y, 0);
-    glVertex3f(max.x, max.y, 0);
-    glVertex3f(min.x, max.y, 0);
-    glVertex3f(min.x, min.y, 0);
+    const Boite cube = pNode->GetBoite();
+    const PosParticule3D &min = cube.point1;
+    const PosParticule3D &max = cube.point2;
+
+    glBegin(GL_QUADS);
+
+    // Front face
+    glVertex3f(min.x, min.y, min.z);
+    glVertex3f(max.x, min.y, min.z);
+    glVertex3f(max.x, max.y, min.z);
+    glVertex3f(min.x, max.y, min.z);
+
+    // Back face
+    glVertex3f(min.x, min.y, max.z);
+    glVertex3f(max.x, min.y, max.z);
+    glVertex3f(max.x, max.y, max.z);
+    glVertex3f(min.x, max.y, max.z);
+
+    // Left face
+    glVertex3f(min.x, min.y, min.z);
+    glVertex3f(min.x, max.y, min.z);
+    glVertex3f(min.x, max.y, max.z);
+    glVertex3f(min.x, min.y, max.z);
+
+    // Right face
+    glVertex3f(max.x, min.y, min.z);
+    glVertex3f(max.x, max.y, min.z);
+    glVertex3f(max.x, max.y, max.z);
+    glVertex3f(max.x, min.y, max.z);
+
+    // Top face
+    glVertex3f(min.x, max.y, min.z);
+    glVertex3f(max.x, max.y, min.z);
+    glVertex3f(max.x, max.y, max.z);
+    glVertex3f(min.x, max.y, max.z);
+
+    // Bottom face
+    glVertex3f(min.x, min.y, min.z);
+    glVertex3f(max.x, min.y, min.z);
+    glVertex3f(max.x, min.y, max.z);
+    glVertex3f(min.x, min.y, max.z);
+
     glEnd();
 
     if (_flags & dspCENTER_OF_MASS && !pNode->IsExternal())
     {
-        Vec2D cm = pNode->GetCenterOfMass();
+        PosParticule3D cm = pNode->GetCenterOfMass();
 
-        glpoint1MinSize(4);
+        glPointSize(4);
         glColor3f(col, 1, col);
         glBegin(GL_LINES);
-        glVertex3f(cm.x - len, cm.y, 0);
-        glVertex3f(cm.x + len, cm.y, 0);
-        glVertex3f(cm.x, cm.y - len, 0);
-        glVertex3f(cm.x, cm.y + len, 0);
+        glVertex3f(cm.x - len, cm.y, cm.z);
+        glVertex3f(cm.x + len, cm.y, cm.z);
+        glVertex3f(cm.x, cm.y - len, cm.z);
+        glVertex3f(cm.x, cm.y + len, cm.z);
+        glVertex3f(cm.x, cm.y, cm.z - len);
+        glVertex3f(cm.x, cm.y, cm.z + len);
         glEnd();
     }
 
     if (!pNode->WasTooClose())
         return;
 
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 8; ++i)
     {
-        if (pNode->_quadNode[i])
+        if (pNode->_noeudFils[i])
         {
-            DrawNode(pNode->_quadNode[i], level + 1);
+            DrawNode(pNode->_noeudFils[i], level + 1);
         }
     }
 }
@@ -469,12 +547,12 @@ void NBodyWnd::OnProcessEvents(uint8_t type)
 
         case SDLK_KP_PLUS:
             ScaleAxis(0.9);
-            SetCameraOrientation(Vec3D(0, 1, 0));
+            SetCameraOrientation(PosParticule3D(0, 1, 0));
             break;
 
         case SDLK_KP_MINUS:
             ScaleAxis(1.1);
-            SetCameraOrientation(Vec3D(0, 1, 0));
+            SetCameraOrientation(PosParticule3D(0, 1, 0));
             break;
 
         default:

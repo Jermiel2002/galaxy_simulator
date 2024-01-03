@@ -1,5 +1,5 @@
-#ifndef _TYPES_H
-#define _TYPES_H
+#ifndef _Particule3D_H
+#define _Particule3D_H
 
 #pragma pack(push, 1)
 
@@ -40,4 +40,4 @@ struct ParticleData
     PODAuxState *_pAuxState;
 };
 
-#endif // _TYPES_H
+#endif // _Particule3D_H

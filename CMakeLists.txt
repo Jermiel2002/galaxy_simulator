@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(barnes-hut-simulator)
+project(privé)
 set(CMAKE_CXX_STANDARD 17)
 
 # Need to install the following libraries in the case of Ubuntu:
@@ -36,7 +36,7 @@ find_package(OpenMP REQUIRED)
 include_directories(include)
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -ffast-math -fomit-framepointers")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -ffast-math -fomit-framepoint1Miners")
 
 # Set the source files
 set(SOURCES
@@ -51,18 +51,18 @@ set(SOURCES
     src/ModelNBody.cpp
     src/NBodyWnd.cpp
     src/SDLWnd.cpp
-    src/Types.cpp
-    src/Vector.cpp)
+    src/Particule3D.cpp
+    src/Espace3D.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
-#target_include_directories(barnes-hut-simulator
+#target_include_directories(privé
 #  PUBLIC
 #    ${PROJECT_SOURCE_DIR}
 #  )
 
-target_link_libraries(barnes-hut-simulator
+target_link_libraries(privé
   PUBLIC
     SDL
     X11

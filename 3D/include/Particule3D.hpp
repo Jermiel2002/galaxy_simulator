@@ -11,21 +11,21 @@
 struct PosParticule3D{
         //constructeurs
         PosParticule3D();
-        PosParticule3D(double *x, double *y, double *z);
+        PosParticule3D(double x, double y, double z);
 
-        //fonctions
+     /*   //fonctions
         bool ParticuleEgaux(PosParticule3D p1, PosParticule3D p2); //verifie que deux particules ont la même position
 
-        double distEntrParticule(PosParticule3D p1, PosParticule3D p2); //calcul de la distance euclidienne entre deux points tridimensionnels dans l'espace
+        double distEntrParticule(PosParticule3D p1, PosParticule3D p2); //calcul de la distance euclidienne entre deux point1s tridimensionnels dans l'espace
 
         //PosParticule3D fusionParticule(PosParticule3D p1, PosParticule3D p2);
 
-        //PosParticule3D MultiplierParticule(PosParticule3D p, double s);
+        //PosParticule3D MultiplierParticule(PosParticule3D p, double s);*/
         
         //variables
-        double *x;
-        double *y;
-        double *z;
+        double x;
+        double y;
+        double z;
 
 };
 
@@ -49,8 +49,8 @@ class EtatAuxiliaire
 {
     public:
         EtatAuxiliaire();
-        EtatAuxiliaire(double *masse);
-        double *masse;
+        EtatAuxiliaire(double masse);
+        double masse;
 };
 
 //class de mis à jour de l'état d'une particule au fil du temps contenant les dérivées de l'état d'une particule
@@ -77,11 +77,9 @@ class ParticuleData
         //fonctions
         void Reset(); //réinitialise l'état de l'objet ParticleData
         bool IsNull() const; //Vérifie si les variables de la particule sont nulles
-
         //variables
         EtatParticule *_pState; //Une particule est caractérisé par son état
         EtatAuxiliaire *_pAuxState; //Et son état auxiliaire
 };
 
 #endif
-

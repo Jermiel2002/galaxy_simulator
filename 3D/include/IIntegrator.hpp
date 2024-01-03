@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "IModel.h"
+#include "../include/IModel.hpp"
 
 
 /** \brief Base class for a variety of integration algorithms. */
@@ -37,7 +37,7 @@ protected:
 
     void SetID(const std::string &sID);
 
-    IModel *m_pModel;               ///< point1Miner to the model implementation
+    IModel *m_pModel;               ///< Pointer to the model implementation
     double m_h;                     ///< The timestep size
     double m_time;                  ///< The absolute time
     double m_err;                   ///< The local error if supported by the integration scheme

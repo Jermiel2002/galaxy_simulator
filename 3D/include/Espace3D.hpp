@@ -3,10 +3,7 @@
 
 #pragma once
 
-#include <iostream>
-#include "math.h"
-#include <stdbool.h>
-#include "Particule3D.hpp"
+#include "../include/Particule3D.hpp"
 
 
 /*
@@ -15,41 +12,28 @@
 * Le but est d'avoir une structure de sorte que chaque particule soit contenu dans un sous cube
 */
 
+/**Avant l'OctreeNode il faut une boite 3D dont les point2 représentent l'espace qu'occupe une particule dans l'espace 3D*/
+
 
 /*
 * Une boite dans l'espace tridimensionnel est definie par deux ensembles de coordonnées par convention
 * On a d'une part les coordonnées du coin inférieur gauche de la boite (x, y, z)
-* Et les dimensions de la boite d'autre part (largeur, hauteur, profondeur)*/
-struct Boite
+* Et les point2 de la boite d'autre part (largeur, hauteur, profondeur)*/
+class Boite
 {
-    //constructeurs
-    Boite(double x, double y, double z, double w, double h, double d);
-    Boite();
+    public:
+        //constructeurs
+        Boite();
+        Boite(PosParticule3D point1, PosParticule3D point2);
 
-    //fonctions
-    bool inBoite(PosParticule3D p, Boite b);
-    bool intersect(Boite b1, Boite b2);
+        //fonctions
+        //bool inBoite(PosParticule3D p, Boite b);
+        //bool intersect(Boite b1, Boite b2);
 
-    //variables
-    double x, y, z;
-    double w,h,d;
-};
-
-struct Octree
-{
-    //variables
-    Boite cube;
-    int size;
-    int id;
-    /*
-        La ligne suivante déclare un tableau tridimensionnel de pointeurs vers des structures Octree. Cela représente les huit sous-arbres (octants) de l'arbre actuel. Chaque dimension du tableau peut avoir deux valeurs, indiquant ainsi les huit subdivisions possibles de l'espace tridimensionnel. Un pointeur à nullptr indique qu'une subdivision particulière n'est pas encore créée.
-    */
-    Octree *substrees[2][2][2];
-
-    //fonction
-    bool is_divided;
-    /*newOctree qui crée et initialise un nouvel Octree en allouant de la mémoire dynamique pour la structure Octree et en initialisant ses propriétés. */
-    Octree* newOctree(Boite b);
+        //variables
+        PosParticule3D point1;
+        PosParticule3D point2;
+        ParticuleData p; //une boite contient normalement des infos sur sa particule
 };
 
 #endif

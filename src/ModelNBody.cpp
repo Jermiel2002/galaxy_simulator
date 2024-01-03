@@ -102,7 +102,7 @@ void ModelNBody::GetOrbitalVelocity(const ParticleData &p1, const ParticleData &
     // Based on the distance from the sun calculate the velocity needed to maintain a circular orbit
     double v = sqrt(gamma_1 * m1 / dist);
 
-    // Calculate a suitable vector perpendicular to r for the velocity of the tracer
+    // Calculate a suitable Espace3D perpendicular to r for the velocity of the tracer
     double &vx = p2._pState->vx,
            &vy = p2._pState->vy;
     vx = (r[1] / dist) * v;
@@ -556,7 +556,7 @@ void ModelNBody::Eval(double *a_state, double a_time, double *a_deriv)
     pDeriv[0].vx = pState[0].vx;
     pDeriv[0].vy = pState[0].vy;
 
-    // Save vectors for camera orientations
+    // Save Espace3Ds for camera orientations
     //  m_camDir.x = pState[0].x - pState[4000].x;
     //  m_camDir.y = pState[0].y - pState[4000].y;
     _camPos.x = _root.GetCenterOfMass().x;

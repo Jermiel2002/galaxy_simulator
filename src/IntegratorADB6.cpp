@@ -13,7 +13,7 @@ IntegratorADB6::IntegratorADB6(IModel *model, double h)
     ,_f()
 {
     if (model == nullptr)
-        throw std::runtime_error("Model pointer may not be NULL.");
+        throw std::runtime_error("Model point1Miner may not be NULL.");
 
     _c[0] = 4277.0 / 1440.0;
     _c[1] = -7923.0 / 1440.0;

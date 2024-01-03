@@ -1,32 +1,36 @@
-#ifndef OCTREE_HPP
-#define OCTREE_HPP
-
-//--- Standard includes --------------------------------------------------------
-#include <vector>
+#ifndef Octree_HPP
+#define Octree_HPP
 
 //--- Implementation -----------------------------------------------------------
-#include "Particule3D.hpp"
-#include "Espace3D.hpp"
+#include "../include/Espace3D.hpp"
+#include <vector>
 
-/**
- * Les calculs effectués dans d'autres parties de la classe, tels que le calcul des forces gravitationnelles, 
- * devraient être adaptés pour travailler avec des coordonnées en trois dimensions. Les méthodes CalcAcc et CalcTreeForce ainsi que d'autres parties du code nécessiteraient des ajustements pour prendre en compte les changements dimensionnels.
-*/
 //------------------------------------------------------------------------------
-class Octree
+/**A quoi ressemble un noeud de notre OctreeNode ? c'est ce à quoi répond la class OctreeNode*/
+class OctreeNode
 {
     public:
-        struct DebugStat
+        
+        /** \brief Enumeration for the Octrants. */
+        enum BoiteAParticule
         {
-            int _nNumCalc;///< Total number of calculations for estimating the force
+            SWD = 0,//Octant Sud-Ouest Bas
+            SWU,//Octant Sud-Ouest Haut
+            NWD,//Octant Nord-Ouest Bas
+            NWU,//Octant Nord-Ouest Haut
+            SED,//Octant Sud-Est Bas
+            SEU,//Octant Sud-Est Haut
+            NED,//Octant Nord-Est Bas
+            NEU,//Octant Nord-est haut
+            NONE
         };
 
         //constructeurs
-        Octree(const PosParticule3D &min, const PosParticule3D &max, Octree *parent = nullptr);
-        ~Octree();//on libère la mémoire du noeud
+        OctreeNode(const Boite &reper_boite, OctreeNode *parent = nullptr);//on crée un noeud
+        ~OctreeNode();//on libère la mémoire du noeud en le supprimant
 
         //fonctions
-        void Reset(const PosParticule3D &min, const PosParticule3D &max);
+        void Reset(const Boite &reperBoite);
         bool IsRoot() const;
         bool IsExternal() const;
         bool WasTooClose() const;
@@ -37,42 +41,36 @@ class Octree
         int GetNumRenegades() const;
         int GetNum() const;
         const PosParticule3D &GetCenterOfMass() const;
-        const PosParticule3D &GetMin() const;
-        const PosParticule3D &GetMax() const;
+        const Boite &GetBoite() const;
 
         double GetTheta() const;
         void SetTheta(double Theta);
 
-        void Insert(const ParticuleData &newParticule, int level);
-
-        /*EQuadrant GetQuadrant(double x, double y) const;
-        BHTreeNode *CreateQuadNode(EQuadrant eQuad);*/
+        BoiteAParticule GetTypeBoite(PosParticule3D &p) const;
+        OctreeNode *CreateOctreeNodeNode(BoiteAParticule boiteP);
+        void InsertParticule(const ParticuleData &newParticule, int level);
 
         void ComputeMassDistribution();
 
         PosParticule3D CalcForce(const ParticuleData &p) const;
-        void DumpNode(int quad, int level);
+        void DumpNode(int oct, int level);
 
-    public:
-        Octree *_octreeNode[8];
+        struct DebugStat
+        {
+            int _nNumCalc;///< Total number of calculations for estimating the force
+        };
     
-    private:
+    private://l'utilisateur ne doit pas modifié ces variables; pour les consulté ou modifié si nécessaire, on créera une fonction plus tard
         PosParticule3D CalcAcc(const ParticuleData &p1, const ParticuleData &p2) const;
         PosParticule3D CalcTreeForce(const ParticuleData &p) const;
-
-            /** \brief Data for the particle.
-
-            Only valid if this is a leaf node.
-            */
         ParticuleData _particle;
         double _mass;              ///< Mass of all particles inside the node
         PosParticule3D _cm;                 ///< Center of Mass
-        PosParticule3D _min;                ///< Upper left edge of the node
-        PosParticule3D _max;                ///< Lower right edge of the node
+        Boite _boite;             //La boite contient les coordonnées de l'espace cubique qu'occupe une particule   
         PosParticule3D _center;             ///< Center of the node
-        Octree *_parent;       ///< The parent node
+        OctreeNode *_parent;       ///< The parent node
         int _num;                  ///< The number of particles in this node
-        mutable bool _bSubdivided; ///< True if this node is too close to use the approximation for the force calculation
+        mutable bool _bSubdivided; ///< True if this node is too close to use the approximation for the force calculation; "mutable" = peut être modifié même si l'objet est déclaré comme const
 
         static double s_theta;
         static std::vector<ParticuleData> s_renegades;
@@ -80,6 +78,7 @@ class Octree
 
     public:
         static double s_gamma;
+        OctreeNode *_noeudFils[8];//un noeud est constitué de huit fils
 
     
     private:

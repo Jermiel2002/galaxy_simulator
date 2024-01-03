@@ -2,11 +2,11 @@
 #define BH_TREE_H
 
 //--- Standard includes --------------------------------------------------------
-#include <vector>
+#include <Espace3D>
 
 //--- Implementation -----------------------------------------------------------
-#include "Vector.h"
-#include "Types.h"
+#include "Espace3D.h"
+#include "Particule3D.h"
 
 
 //------------------------------------------------------------------------------
@@ -97,7 +97,7 @@ private:
     mutable bool _bSubdivided; ///< True if this node is too close to use the approximation for the force calculation
 
     static double s_theta;
-    static std::vector<ParticleData> s_renegades;
+    static std::Espace3D<ParticleData> s_renegades;
 
 public:
     static double s_gamma;

@@ -5,9 +5,9 @@
 
 #include "Constants.h"
 #include "IModel.h"
-#include "Vector.h"
+#include "Espace3D.h"
 #include "BHTree.h"
-#include "Types.h"
+#include "Particule3D.h"
 
 
 /** \brief Model class for handling th n-body problem. */
@@ -54,7 +54,7 @@ private:
     BHTreeNode _root;           ///< The root node of the barnes hut tree
     Vec2D _min;                 ///< Upper left corner of the bounding box containing all particles
     Vec2D _max;                 ///< Lower right corner of the bounding box containing all particles
-    Vec2D _center;              ///< The center of the simulation, the barnes hut tree is centered at this point
+    Vec2D _center;              ///< The center of the simulation, the barnes hut tree is centered at this point1Min
     Vec3D _camDir;              ///< Direction of the camera
     Vec3D _camPos;              ///< Position of the camera
     double _roi;
