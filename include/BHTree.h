@@ -8,7 +8,6 @@
 #include "Vector.h"
 #include "Types.h"
 
-
 //------------------------------------------------------------------------------
 struct State
 {
@@ -17,8 +16,6 @@ struct State
     Vec2D acc;
     double m;
 };
-
-
 
 /** \brief Implementation of a single node of the barnes hut tree. */
 class BHTreeNode

@@ -1,7 +1,5 @@
 #include "BHTree.h"
 
-
-
 //--- Standard includes --------------------------------------------------------
 #include <cstdio>
 #include <cstring>
@@ -15,45 +13,34 @@
 // static variables
 
 /*s_theta est une variable statique qui représente le paramètre 0 de l'algo de barnes hut. Il est utilisé pour
-* décider si un noeud doit être approximé comme une particule unique lors du calcul des forces.*/
+ * décider si un noeud doit être approximé comme une particule unique lors du calcul des forces.*/
 double BHTreeNode::s_theta = 0.9;
 
-/**s_renegades est une tableau dynamique contenant des particules d'un noeud*/
+/**s_renegades est un tableau dynamique contenant des particules d'un noeud*/
 std::vector<ParticleData> BHTreeNode::s_renegades;
 
 /*s_stat est une structure de type BHTreeNode::DebugStat, qui est une structure utilisé pour stocker des statistiques de débogage.
 il contient seulement un membre _nNumCalc qui représente le nombre total de calculs effectués lors de la simulation*/
 BHTreeNode::DebugStat BHTreeNode::s_stat = {0};
 
-double BHTreeNode::s_gamma = 0;        // gravitational constant is set from the outside
+double BHTreeNode::s_gamma = 0; // gravitational constant is set from the outside
 
 /*s_soft représente le paramètre de softening. Cela ajoute une petite constante pour éviter les singularités
 lorsque deux particules sont très proches. La valeur 0.1*0.1 est utilisée ici, représentant environ 3 années lumière.*/
 double BHTreeNode::s_soft = 0.1 * 0.1; // approx. 3 light year
 
-
 BHTreeNode::BHTreeNode(const Vec2D &min,
                        const Vec2D &max,
                        BHTreeNode *parent)
-    :_particle()
-    ,_mass(0)
-    ,_cm()
-    ,_min(min)
-    ,_max(max)
-    ,_center(min.x + (max.x - min.x) / 2.0, min.y + (max.y - min.y) / 2.0)
-    ,_parent(parent)
-    ,_num(0)
-    ,_bSubdivided(false)
+    : _particle(), _mass(0), _cm(), _min(min), _max(max), _center(min.x + (max.x - min.x) / 2.0, min.y + (max.y - min.y) / 2.0), _parent(parent), _num(0), _bSubdivided(false)
 {
     _quadNode[0] = _quadNode[1] = _quadNode[2] = _quadNode[3] = nullptr;
 }
-
 
 bool BHTreeNode::IsRoot() const
 {
     return _parent == nullptr;
 }
-
 
 bool BHTreeNode::IsExternal() const
 {
@@ -63,52 +50,44 @@ bool BHTreeNode::IsExternal() const
            _quadNode[3] == nullptr;
 }
 
-
 bool BHTreeNode::WasTooClose() const
 {
     return _bSubdivided;
 }
-
 
 const Vec2D &BHTreeNode::GetMin() const
 {
     return _min;
 }
 
-
 const Vec2D &BHTreeNode::GetMax() const
 {
     return _max;
 }
-
 
 const Vec2D &BHTreeNode::GetCenterOfMass() const
 {
     return _cm;
 }
 
-
 double BHTreeNode::GetTheta() const
 {
     return s_theta;
 }
-
 
 void BHTreeNode::SetTheta(double theta)
 {
     s_theta = theta;
 }
 
-
 int BHTreeNode::StatGetNumCalc() const
 {
     return s_stat._nNumCalc;
 }
 
-
 /** \brief Returns the number of particles not assigned to any node.
- * La méthode GetNumRenegades retourne le nombre de particules qui n'ont pas été assignées à un nœud spécifique de l'arbre. Dans le contexte de cet arbre Barnes-Hut, 
- * lorsqu'une particule ne peut pas être insérée dans un nœud particulier (par exemple, parce que le nœud est déjà occupé par une autre particule ou que la particule se trouve en dehors des limites du nœud), cette particule est ajoutée à un vecteur appelé s_renegades. 
+ * La méthode GetNumRenegades retourne le nombre de particules qui n'ont pas été assignées à un nœud spécifique de l'arbre. Dans le contexte de cet arbre Barnes-Hut,
+ * lorsqu'une particule ne peut pas être insérée dans un nœud particulier (par exemple, parce que le nœud est déjà occupé par une autre particule ou que la particule se trouve en dehors des limites du nœud), cette particule est ajoutée à un vecteur appelé s_renegades.
  * Ainsi, cette méthode renvoie la taille de ce vecteur, ce qui représente le nombre de particules non assignées.
  */
 int BHTreeNode::GetNumRenegades() const
@@ -116,13 +95,11 @@ int BHTreeNode::GetNumRenegades() const
     return s_renegades.size();
 }
 
-
 /** \brief Returns the number of particles inside this node. */
 int BHTreeNode::GetNum() const
 {
     return _num;
 }
-
 
 void BHTreeNode::StatReset()
 {
@@ -150,7 +127,6 @@ void BHTreeNode::StatReset()
     } ResetFlagNow(this);
 }
 
-
 void BHTreeNode::Reset(const Vec2D &min, const Vec2D &max)
 {
     if (!IsRoot())
@@ -172,7 +148,6 @@ void BHTreeNode::Reset(const Vec2D &min, const Vec2D &max)
 
     s_renegades.clear();
 }
-
 
 BHTreeNode::EQuadrant BHTreeNode::GetQuadrant(double x, double y) const
 {
@@ -212,7 +187,6 @@ BHTreeNode::EQuadrant BHTreeNode::GetQuadrant(double x, double y) const
     }
 }
 
-
 BHTreeNode *BHTreeNode::CreateQuadNode(EQuadrant eQuad)
 {
     switch (eQuad)
@@ -243,7 +217,6 @@ BHTreeNode *BHTreeNode::CreateQuadNode(EQuadrant eQuad)
     }
     }
 }
-
 
 void BHTreeNode::ComputeMassDistribution()
 {
@@ -278,7 +251,6 @@ void BHTreeNode::ComputeMassDistribution()
         _cm.y /= _mass;
     }
 }
-
 
 /** \brief Calculate the accelleration caused by gravitaion of p2 on p1. */
 Vec2D BHTreeNode::CalcAcc(const ParticleData &p1, const ParticleData &p2) const
@@ -315,7 +287,6 @@ Vec2D BHTreeNode::CalcAcc(const ParticleData &p1, const ParticleData &p2) const
     return acc;
 }
 
-
 Vec2D BHTreeNode::CalcForce(const ParticleData &p1) const
 {
     // calculate the force from the barnes hut tree to the particle p1
@@ -334,7 +305,6 @@ Vec2D BHTreeNode::CalcForce(const ParticleData &p1) const
 
     return acc;
 }
-
 
 /**  \brief Compute the force acting from this node and it's child
             to a particle p.
@@ -385,7 +355,6 @@ Vec2D BHTreeNode::CalcTreeForce(const ParticleData &p1) const
     return acc;
 }
 
-
 void BHTreeNode::DumpNode(int quad, int level)
 {
     std::string space;
@@ -406,7 +375,6 @@ void BHTreeNode::DumpNode(int quad, int level)
         }
     }
 }
-
 
 void BHTreeNode::Insert(const ParticleData &newParticle, int level)
 {
@@ -468,7 +436,6 @@ void BHTreeNode::Insert(const ParticleData &newParticle, int level)
 
     _num++;
 }
-
 
 BHTreeNode::~BHTreeNode()
 {
