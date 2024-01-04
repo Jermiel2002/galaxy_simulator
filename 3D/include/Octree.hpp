@@ -1,6 +1,6 @@
 #pragma once
 //--- Implementation -----------------------------------------------------------
-#include "../include/Espace3D.hpp"
+#include "../include/Boite.hpp"
 #include <vector>
 
 //------------------------------------------------------------------------------

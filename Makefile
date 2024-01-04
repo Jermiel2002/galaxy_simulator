@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jermiel/Documents/Structure_donnees_avance/projet/my-private-galaxy
+CMAKE_SOURCE_DIR = /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jermiel/Documents/Structure_donnees_avance/projet/my-private-galaxy
+CMAKE_BINARY_DIR = /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jermiel/Documents/Structure_donnees_avance/projet/my-private-galaxy/CMakeFiles /home/jermiel/Documents/Structure_donnees_avance/projet/my-private-galaxy//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/CMakeFiles /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jermiel/Documents/Structure_donnees_avance/projet/my-private-galaxy/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -128,6 +128,30 @@ my-private-galaxy: cmake_check_build_system
 my-private-galaxy/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/my-private-galaxy.dir/build.make CMakeFiles/my-private-galaxy.dir/build
 .PHONY : my-private-galaxy/fast
+
+3D/src/Boite.o: 3D/src/Boite.cpp.o
+.PHONY : 3D/src/Boite.o
+
+# target to build an object file
+3D/src/Boite.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my-private-galaxy.dir/build.make CMakeFiles/my-private-galaxy.dir/3D/src/Boite.cpp.o
+.PHONY : 3D/src/Boite.cpp.o
+
+3D/src/Boite.i: 3D/src/Boite.cpp.i
+.PHONY : 3D/src/Boite.i
+
+# target to preprocess a source file
+3D/src/Boite.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my-private-galaxy.dir/build.make CMakeFiles/my-private-galaxy.dir/3D/src/Boite.cpp.i
+.PHONY : 3D/src/Boite.cpp.i
+
+3D/src/Boite.s: 3D/src/Boite.cpp.s
+.PHONY : 3D/src/Boite.s
+
+# target to generate assembly for a file
+3D/src/Boite.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/my-private-galaxy.dir/build.make CMakeFiles/my-private-galaxy.dir/3D/src/Boite.cpp.s
+.PHONY : 3D/src/Boite.cpp.s
 
 3D/src/IIntegrator.o: 3D/src/IIntegrator.cpp.o
 .PHONY : 3D/src/IIntegrator.o
@@ -426,6 +450,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... my-private-galaxy"
+	@echo "... 3D/src/Boite.o"
+	@echo "... 3D/src/Boite.i"
+	@echo "... 3D/src/Boite.s"
 	@echo "... 3D/src/IIntegrator.o"
 	@echo "... 3D/src/IIntegrator.i"
 	@echo "... 3D/src/IIntegrator.s"

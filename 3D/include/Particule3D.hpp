@@ -53,8 +53,6 @@ struct MajEtat
     PosParticule3D *acceleration;
 };
 
-/*On rétablit lalignement mémoire par défaut après la définition des structures qui nécessitent un alignement particulier.*/
-#pragma pack(pop)
 
 
 /* ParticleData définit une classe qui encapsule des données liées à une particule*/

@@ -41,6 +41,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -ffast-math -fomit-f
 # Set the source files
 set(SOURCES
     3D/src/main.cpp
+    3D/src/Boite.cpp
     3D/src/Octree.cpp
     3D/src/IIntegrator.cpp
     3D/src/IntegratorADB5.cpp

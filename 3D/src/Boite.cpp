@@ -1,4 +1,4 @@
-#include "../include/Espace3D.hpp"
+#include "../include/Boite.hpp"
 
 /*
 * Ici on va représenté tout ce qu'il faut pour notre espace. Autrement dit, notre espace est constitué d'un ensemble de particule
@@ -13,4 +13,4 @@
 * Et les point2 de la boite d'autre part (largeur, hauteur, profondeur)*/
 Boite::Boite(): point1(0,0,0),point2(1,1,1) {}
 
-Boite::Boite(PosParticule3D point1, PosParticule3D point2): Boite(point1,point2){}
+Boite::Boite(PosParticule3D point11, PosParticule3D point22): point1(point11),point2(point22){}

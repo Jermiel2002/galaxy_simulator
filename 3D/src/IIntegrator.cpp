@@ -78,7 +78,7 @@ double IIntegrator::GetError() const
 
 
 /** \brief Evaluate the model function at a certain point in time. */
-void IIntegrator::Evaluate(const double *initial,  // initial state Espace3D
+void IIntegrator::Evaluate(const double *initial,  // initial state Boite
                            const double *deriv_in, // derivation k input
                            double h,               // the new intermediary timestep is at h*k
                            double time,            // absolute time
