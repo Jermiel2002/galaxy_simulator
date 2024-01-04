@@ -8,8 +8,8 @@
 using namespace std;
 
 // codage des constructeurs pour identifier les positions d'une particule dans l'espace
-PosParticule3D::PosParticule3D() : x(nullptr), y(nullptr), z(nullptr){};
-PosParticule3D::PosParticule3D(double *xCoord, double *yCoord, double *zCoord) : x(xCoord), y(yCoord), z(zCoord)
+PosParticule3D::PosParticule3D() : x(0), y(0), z(0){};
+PosParticule3D::PosParticule3D(double xCoord, double yCoord, double zCoord) : x(xCoord), y(yCoord), z(zCoord)
 {
     assert(x);
     assert(y);
@@ -26,8 +26,8 @@ EtatParticule::EtatParticule(PosParticule3D *ppos, PosParticule3D *vvitesse, Pos
 };
 
 // codage des constructeurs pour représenter l'état auxiliaire d'une particule dans l'espace
-EtatAuxiliaire::EtatAuxiliaire() : masse(nullptr){};
-EtatAuxiliaire::EtatAuxiliaire(double *weight) : masse(weight)
+EtatAuxiliaire::EtatAuxiliaire() : masse(0){};
+EtatAuxiliaire::EtatAuxiliaire(double weight) : masse(weight)
 {
     assert(masse);
 };
@@ -75,12 +75,13 @@ double PosParticule3D::distEntrParticule(PosParticule3D p1, PosParticule3D p2)
     return sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y) + (p1.z - p2.z) * (p1.z - p2.z));
 }
 
-/*PosParticule3D PosParticule3D::fusionParticule(PosParticule3D p1, PosParticule3D p2)
-    {
-        return PosParticule3D((p1.x+p2.x) , p1.y+p2.y , p1.z+p2.z);
-    }*/
+PosParticule3D PosParticule3D::fusionParticule(PosParticule3D p1, PosParticule3D p2)
+{
+    return PosParticule3D((p1.x + p2.x), p1.y + p2.y, p1.z + p2.z);
+}
 
 /*PosParticule3D PosParticule3D::MultiplierParticule(PosParticule3D p, double s)
     {
         return PosParticule3D(p.x * s, p.y * s, p.z * s);
-    }*/
+    }
+*/

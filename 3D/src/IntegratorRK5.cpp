@@ -1,4 +1,4 @@
-#include "IntegratorRK5.h"
+#include "../include/IntegratorRK5.h"
 
 //--- Standard includes --------------------------------------------------------
 #include <cassert>
@@ -18,7 +18,7 @@ IntegratorRK5::IntegratorRK5(IModel *pModel, double h)
     ,_k6(new double[pModel->GetDim()])
 {
     if (pModel == nullptr)
-        throw std::runtime_error("Model point1Miner may not be NULL.");
+        throw std::runtime_error("Model pointer may not be NULL.");
 
     std::stringstream ss;
     ss << "RK5 (dt=" << m_h << ")";

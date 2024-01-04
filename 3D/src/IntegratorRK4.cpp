@@ -1,4 +1,4 @@
-#include "IntegratorRK4.h"
+#include "../include/IntegratorRK4.h"
 
 //--- Standard includes --------------------------------------------------------
 #include <cassert>
@@ -16,7 +16,7 @@ IntegratorRK4::IntegratorRK4(IModel *pModel, double h)
     ,_k4(new double[pModel->GetDim()])
 {
     if (pModel == nullptr)
-        throw std::runtime_error("Model point1Miner may not be NULL.");
+        throw std::runtime_error("Model pointer may not be NULL.");
 
     std::stringstream ss;
     ss << "RK4 (dt=" << m_h << ")";

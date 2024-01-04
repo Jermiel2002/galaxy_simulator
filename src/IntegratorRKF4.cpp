@@ -22,7 +22,7 @@ IntegratorRKF4::IntegratorRKF4(IModel *pModel, double h)
     ,_maxErr(0.005)
 {
     if (pModel == nullptr)
-        throw std::runtime_error("Model pointer may not be NULL.");
+        throw std::runtime_error("Model point1Miner may not be NULL.");
 
     std::stringstream ss;
     ss << "RKF4 (dt=" << m_h << ")";

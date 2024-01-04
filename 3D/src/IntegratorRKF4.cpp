@@ -1,12 +1,14 @@
-#include "IntegratorRK5.h"
+#include "../include/IntegratorRKF4.h"
 
 //--- Standard includes --------------------------------------------------------
 #include <cassert>
 #include <stdexcept>
 #include <sstream>
+#include <cmath>
+#include <iostream>
 
 
-IntegratorRK5::IntegratorRK5(IModel *pModel, double h)
+IntegratorRKF4::IntegratorRKF4(IModel *pModel, double h)
     :IIntegrator(pModel, h)
     ,_state(new double[pModel->GetDim()])
     ,_tmp(new double[pModel->GetDim()])
@@ -16,17 +18,19 @@ IntegratorRK5::IntegratorRK5(IModel *pModel, double h)
     ,_k4(new double[pModel->GetDim()])
     ,_k5(new double[pModel->GetDim()])
     ,_k6(new double[pModel->GetDim()])
+    ,_error(new double[pModel->GetDim()])
+    ,_maxErr(0.005)
 {
     if (pModel == nullptr)
-        throw std::runtime_error("Model point1Miner may not be NULL.");
+        throw std::runtime_error("Model pointer may not be NULL.");
 
     std::stringstream ss;
-    ss << "RK5 (dt=" << m_h << ")";
+    ss << "RKF4 (dt=" << m_h << ")";
     SetID(ss.str());
 }
 
 
-IntegratorRK5::~IntegratorRK5()
+IntegratorRKF4::~IntegratorRKF4()
 {
     delete[] _state;
     delete[] _tmp;
@@ -36,11 +40,12 @@ IntegratorRK5::~IntegratorRK5()
     delete[] _k4;
     delete[] _k5;
     delete[] _k6;
+    delete[] _error;
 }
 
 
 /** \brief Performs a single integration step. */
-void IntegratorRK5::SingleStep()
+void IntegratorRKF4::SingleStep()
 {
     assert(m_pModel);
 
@@ -73,29 +78,50 @@ void IntegratorRK5::SingleStep()
 
     // K6
     for (unsigned i = 0; i < m_pModel->GetDim(); ++i)
-        _tmp[i] = _state[i] + m_h * (-8.0 / 27.0 * _k1[i] + 2.0 * _k2[i] - 3544.0 / 2565.0 * _k3[i] + 1859.0 / 4104.0 * _k4[i] - 11.0 / 40.0 * _k5[i]);
+        _tmp[i] = _state[i] + m_h * (-8.0 / 27.0 * _k1[i] - 2.0 * _k2[i] - 3544.0 / 2565.0 * _k3[i] + 1859.0 / 4104.0 * _k4[i] - 11.0 / 55.0 * _k5[i]);
 
     m_pModel->Eval(_tmp, m_time + 0.5 * m_h, _k6);
 
-    // rk5
     for (unsigned i = 0; i < m_pModel->GetDim(); ++i)
-        _state[i] += m_h * (16.0 / 135.0 * _k1[i] +
-                             6656.0 / 12825.0 * _k3[i] +
-                             28561.0 / 56430.0 * _k4[i] -
-                             9.0 / 50.0 * _k5[i] +
-                             2.0 / 55.0 * _k6[i]);
+        _state[i] += m_h * (25.0 / 216.0 * _k1[i] +
+                             1408.0 / 2565.0 * _k3[i] +
+                             2197.0 / 4104.0 * _k4[i] -
+                             1.0 / 5.0 * _k5[i]);
+
+    // Fehler
+    m_err = 0;
+    for (unsigned i = 0; i < m_pModel->GetDim(); ++i)
+    {
+        double e = m_h * (1.0 / 360.0 * _k1[i] -
+                          128.0 / 4275.0 * _k3[i] -
+                          2197.0 / 75240.0 * _k4[i] +
+                          1.0 / 50.0 * _k5[i] -
+                          2.0 / 55.0 * _k6[i]);
+        m_err += e * e;
+    }
+
+    m_err = std::sqrt(m_err);
+
+    double h = m_h * std::pow(_maxErr / m_err, 0.25);
+    if (h > 2.0 * m_h)
+    {
+        m_h = h;
+    }
+    else if (h < m_h)
+    {
+        m_h = 0.75 * h;
+    }
 
     m_time += m_h;
 }
 
 
 /** \brief Sets the initial state of the simulation. */
-void IntegratorRK5::SetInitialState(double *state)
+void IntegratorRKF4::SetInitialState(double *state)
 {
     for (unsigned i = 0; i < m_pModel->GetDim(); ++i)
     {
         _state[i] = state[i];
-        _tmp[i] = 0;
         _k1[i] = 0;
         _k2[i] = 0;
         _k3[i] = 0;
@@ -108,7 +134,13 @@ void IntegratorRK5::SetInitialState(double *state)
 }
 
 
-double *IntegratorRK5::GetState() const
+double *IntegratorRKF4::GetState() const
 {
     return _state;
+}
+
+
+void IntegratorRKF4::SetMaximumError(double maxErr)
+{
+    _maxErr = maxErr;
 }

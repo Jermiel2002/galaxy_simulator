@@ -1,4 +1,4 @@
-#include "IntegratorADB5.h"
+#include "../include/IntegratorADB5.h"
 
 #include <cassert>
 #include <stdexcept>
@@ -14,7 +14,7 @@ IntegratorADB5::IntegratorADB5(IModel *pModel, double h)
     ,_rk4(pModel, h)
 {
     if (pModel == nullptr)
-        throw std::runtime_error("Model point1Miner may not be NULL.");
+        throw std::runtime_error("Model pointer may not be NULL.");
 
     _c[0] = 1901.0 / 720.0;
     _c[1] = 1387.0 / 360.0;

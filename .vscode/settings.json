@@ -1,8 +1,11 @@
 {
     "files.associations": {
+        "*.blade.php": "blade",
+        "*.vue": "html",
         "stdexcept": "cpp",
         "cassert": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "vector": "cpp"
     },
     "cmake.configureOnOpen": true
 }

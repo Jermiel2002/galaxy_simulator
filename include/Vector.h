@@ -1,5 +1,5 @@
-#ifndef _VECTOR_H
-#define _VECTOR_H
+#ifndef _Espace3D_H
+#define _Espace3D_H
 
 class Vec2D
 {
@@ -18,4 +18,4 @@ public:
     double z;
 };
 
-#endif //_VECTOR_H
+#endif //_Espace3D_H

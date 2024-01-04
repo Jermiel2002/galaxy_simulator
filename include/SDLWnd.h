@@ -9,7 +9,7 @@
 #include <GL/gl.h>          // Header File For The OpenGL32 Library
 #include <GL/glu.h>         // Header File For The GLu32 Library
 
-#include "Vector.h"
+#include "Espace3D.h"
 
 
 /** \brief Basic infrastructure for grafical output using SDL/OpenGL */
@@ -77,7 +77,7 @@ private:
     int _idxSnapshot;
 
     Vec3D _camPos;    ///< Position of the camera
-    Vec3D _camLookAt; ///< Point atwhich the camera is aimed
+    Vec3D _camLookAt; ///< point1Min atwhich the camera is aimed
     Vec3D _camOrient; ///< orientation of the camera (rotation as it aims at its target)
 
     SDL_Surface *_pScreen;
