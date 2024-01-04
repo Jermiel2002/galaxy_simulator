@@ -42,7 +42,7 @@ double OctreeNode::s_soft = 0.1 * 0.1;
 * Pour un quadtree on utilise les coordonnées min et max respectivement des coins inférieur gauche et supérieur droit
 * Pour un OctreeNode, on va utiliser une boite car pour retrouver l'espace qu'il occupe, il suffit de connaitre les coordonnées d'un sommet et les point2
 */
-OctreeNode::OctreeNode(const Boite &reper_boite, OctreeNode *parent = nullptr):
+OctreeNode::OctreeNode(const Boite &reper_boite, OctreeNode *parent):
 _particle(), 
 _mass(0), 
 _cm(), 
@@ -278,26 +278,26 @@ OctreeNode::BoiteAParticule OctreeNode::GetTypeBoite(PosParticule3D &p) const
  * --> Si c'est une boite nord ouest bas (NWD) les coordonnées du coin inférieur gauche de la boite sont celle du coin inférieur gauche
  * de la boite englobante et les coordonnées représentant les point2, sont les coordonnées du centre de la boite
 */
-OctreeNode *OctreeNode::CreateOctreeNodeNode(BoiteAParticule boiteP)
+OctreeNode* OctreeNode::CreateOctreeNodeNode(BoiteAParticule boiteP)
 {
     switch (boiteP)
     {
         case SWD:  
-            return &OctreeNode(Boite(_boite.point1,_center),this);
+            return new OctreeNode(Boite(_boite.point1,_center),this);
         case SWU:
-            return &OctreeNode(Boite(PosParticule3D(_boite.point1.x,_boite.point1.y,_center.z),PosParticule3D(_center.x,_center.y,_boite.point2.z)),this);
+            return new OctreeNode(Boite(PosParticule3D(_boite.point1.x,_boite.point1.y,_center.z),PosParticule3D(_center.x,_center.y,_boite.point2.z)),this);
         case NWD:
-            return &OctreeNode(Boite(PosParticule3D(_boite.point1.x,_center.y,_boite.point1.z),PosParticule3D(_center.x,_boite.point2.y,_center.z)),this);
+            return new OctreeNode(Boite(PosParticule3D(_boite.point1.x,_center.y,_boite.point1.z),PosParticule3D(_center.x,_boite.point2.y,_center.z)),this);
         case NWU:
-            return &OctreeNode(Boite(PosParticule3D(_boite.point1.x,_center.y,_center.z),PosParticule3D(_center.x,_boite.point2.y,_boite.point2.z)),this);
+            return new OctreeNode(Boite(PosParticule3D(_boite.point1.x,_center.y,_center.z),PosParticule3D(_center.x,_boite.point2.y,_boite.point2.z)),this);
         case SED:
-            return &OctreeNode(Boite(PosParticule3D(_center.x,_boite.point1.y,_boite.point1.z),PosParticule3D(_boite.point2.x,_center.y,_center.z)), this);
+            return new OctreeNode(Boite(PosParticule3D(_center.x,_boite.point1.y,_boite.point1.z),PosParticule3D(_boite.point2.x,_center.y,_center.z)), this);
         case SEU:
-            return &OctreeNode(Boite(PosParticule3D(_center.x,_boite.point1.y,_center.z),PosParticule3D(_boite.point2.x,_center.y,_boite.point2.z)),this);
+            return new OctreeNode(Boite(PosParticule3D(_center.x,_boite.point1.y,_center.z),PosParticule3D(_boite.point2.x,_center.y,_boite.point2.z)),this);
         case NED:
-            return &OctreeNode(Boite(PosParticule3D(_center.x,_center.y,_boite.point1.z),PosParticule3D(_boite.point2.x,_boite.point2.y,_center.z)),this);
+            return new OctreeNode(Boite(PosParticule3D(_center.x,_center.y,_boite.point1.z),PosParticule3D(_boite.point2.x,_boite.point2.y,_center.z)),this);
         case NEU:
-            return &OctreeNode(Boite(_center,_boite.point2), this);
+            return new OctreeNode(Boite(_center,_boite.point2), this);
         default:
         {
             std::stringstream ss;

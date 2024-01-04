@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(privé)
+project(my-private-galaxy)
 set(CMAKE_CXX_STANDARD 17)
 
 # Need to install the following libraries in the case of Ubuntu:
@@ -36,33 +36,34 @@ find_package(OpenMP REQUIRED)
 include_directories(include)
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -ffast-math -fomit-framepoint1Miners")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -ffast-math -fomit-framepointers")
 
 # Set the source files
 set(SOURCES
-    src/main.cpp
-    src/BHTree.cpp
-    src/IIntegrator.cpp
-    src/IntegratorADB5.cpp
-    src/IntegratorADB6.cpp
-    src/IntegratorRK4.cpp
-    src/IntegratorRK5.cpp
-    src/IntegratorRKF4.cpp
-    src/ModelNBody.cpp
-    src/NBodyWnd.cpp
-    src/SDLWnd.cpp
-    src/Particule3D.cpp
-    src/Espace3D.cpp)
+    3D/src/main.cpp
+    3D/src/Boite.cpp
+    3D/src/Octree.cpp
+    3D/src/IIntegrator.cpp
+    3D/src/IntegratorADB5.cpp
+    3D/src/IntegratorADB6.cpp
+    3D/src/IntegratorRK4.cpp
+    3D/src/IntegratorRK5.cpp
+    3D/src/IntegratorRKF4.cpp
+    3D/src/ModelNBody.cpp
+    3D/src/NBodyWnd.cpp
+    3D/src/SDLWnd.cpp
+    3D/src/Particule3D.cpp
+    3D/src/Octree.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
-#target_include_directories(privé
+#target_include_directories(my-private-galaxy
 #  PUBLIC
 #    ${PROJECT_SOURCE_DIR}
 #  )
 
-target_link_libraries(privé
+target_link_libraries(my-private-galaxy
   PUBLIC
     SDL
     X11

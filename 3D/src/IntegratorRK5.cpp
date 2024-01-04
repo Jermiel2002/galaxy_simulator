@@ -1,4 +1,4 @@
-#include "../include/IntegratorRK5.h"
+#include "../include/IntegratorRK5.hpp"
 
 //--- Standard includes --------------------------------------------------------
 #include <cassert>

@@ -553,7 +553,7 @@ void ModelNBody::Eval(double *a_state, double a_time, double *a_deriv)
     pDeriv[0].vitesse->y = pState[0].vitesse->y;
     pDeriv[0].vitesse->z = pState[0].vitesse->z;  
 
-    // Save Espace3Ds for camera orientations
+    // Save Boites for camera orientations
     //  m_camDir.x = pState[0].x - pState[4000].x;
     //  m_camDir.y = pState[0].y - pState[4000].y;
     //m_camDIr.z = pState[0].z - pState[4000].y;

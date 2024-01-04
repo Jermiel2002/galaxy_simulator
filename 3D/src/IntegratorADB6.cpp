@@ -1,4 +1,4 @@
-#include "../include/IntegratorADB6.h"
+#include "../include/IntegratorADB6.hpp"
 
 #include <cassert>
 #include <stdexcept>

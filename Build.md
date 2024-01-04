@@ -11,5 +11,5 @@ Type the following command under the root directory:
 ```terminal
 cmake .
 cmake --build .
-./bin/privé
+./bin/my-private-galaxy
 ```

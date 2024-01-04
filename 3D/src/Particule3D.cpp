@@ -7,30 +7,27 @@
 
 using namespace std;
 
-// codage des constructeurs pour identifier les positions d'une particule dans l'espace
-PosParticule3D::PosParticule3D() : x(0), y(0), z(0){};
-PosParticule3D::PosParticule3D(double xCoord, double yCoord, double zCoord) : x(xCoord), y(yCoord), z(zCoord)
+//codage des constructeurs pour identifier les positions d'une particule dans l'espace
+PosParticule3D::PosParticule3D(): x(0), y(0), z(0){}
+PosParticule3D::PosParticule3D(double xCoord, double yCoord, double zCoord): x(xCoord), y(yCoord), z(zCoord)
 {
-    assert(x);
-    assert(y);
-    assert(z);
+
 }
 
-// codage des constructeurs pour représenter l'état d'une particule dans l'espace
-EtatParticule::EtatParticule() : pos(nullptr), vitesse(nullptr), acceleration(nullptr){};
-EtatParticule::EtatParticule(PosParticule3D *ppos, PosParticule3D *vvitesse, PosParticule3D *aacceleration) : pos(ppos), vitesse(vvitesse), acceleration(aacceleration)
+//codage des constructeurs pour représenter l'état d'une particule dans l'espace
+EtatParticule::EtatParticule(): pos(nullptr), vitesse(nullptr), acceleration(nullptr){}
+EtatParticule::EtatParticule(PosParticule3D *ppos,PosParticule3D *vvitesse, PosParticule3D *aacceleration): pos(ppos),vitesse(vvitesse),acceleration(aacceleration)
 {
     assert(pos);
     assert(vitesse);
     assert(acceleration);
-};
+}
 
-// codage des constructeurs pour représenter l'état auxiliaire d'une particule dans l'espace
-EtatAuxiliaire::EtatAuxiliaire() : masse(0){};
-EtatAuxiliaire::EtatAuxiliaire(double weight) : masse(weight)
+//codage des constructeurs pour représenter l'état auxiliaire d'une particule dans l'espace
+EtatAuxiliaire::EtatAuxiliaire():masse(0){}
+EtatAuxiliaire::EtatAuxiliaire(double weight): masse(weight)
 {
-    assert(masse);
-};
+}
 
 // codage des constructeurs pour représenter les données liées à une particule
 ParticuleData::ParticuleData() : _pState(nullptr), _pAuxState(nullptr){};
@@ -38,8 +35,9 @@ ParticuleData::ParticuleData(EtatParticule *pS, EtatAuxiliaire *pA) : _pState(pS
 {
     assert(_pState);
     assert(_pAuxState);
-};
-ParticuleData::ParticuleData(ParticuleData const &autre) : _pState(autre._pState), _pAuxState(autre._pAuxState){};
+}
+ParticuleData::ParticuleData(ParticuleData const& autre): _pState(autre._pState), _pAuxState(autre._pAuxState)
+{}
 ParticuleData &ParticuleData::operator=(const ParticuleData &ref)
 {
     if (this != &ref)
@@ -49,7 +47,7 @@ ParticuleData &ParticuleData::operator=(const ParticuleData &ref)
     }
 
     return *this;
-};
+}
 
 void ParticuleData::Reset()
 {

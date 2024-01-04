@@ -1,11 +1,4 @@
-#ifndef _PARTICULE_H 
-#define _PARTICULE_H 
-
-/*
-* Pragma fournit des infos spécifiques sur la manière de traiter le code source
-* ici on va indiquer que les membres de la structure doivent être alignés sur une frontière d'octet unique:
-* ils seront placés consécutivement en mémoire sans ajout d'octets supplémentaires pour l'alignement*/
-#pragma pack(push, 1)
+#pragma once
 
 //Particule3D représente les coordonnées d'une particule ou un corps dans l'espace 3D
 struct PosParticule3D{
@@ -60,8 +53,6 @@ struct MajEtat
     PosParticule3D *acceleration;
 };
 
-/*On rétablit lalignement mémoire par défaut après la définition des structures qui nécessitent un alignement particulier.*/
-#pragma pack(pop)
 
 
 /* ParticleData définit une classe qui encapsule des données liées à une particule*/
@@ -82,4 +73,3 @@ class ParticuleData
         EtatAuxiliaire *_pAuxState; //Et son état auxiliaire
 };
 
-#endif

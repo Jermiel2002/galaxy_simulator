@@ -29,7 +29,7 @@ public:
 
 protected:
 
-    void Evaluate(const double *initial,  // initial state Espace3D
+    void Evaluate(const double *initial,  // initial state Boite
                   const double *deriv_in, // derivation k input
                   double h,               // step size
                   double time,            // absolute time

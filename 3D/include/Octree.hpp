@@ -1,8 +1,6 @@
-#ifndef Octree_HPP
-#define Octree_HPP
-
+#pragma once
 //--- Implementation -----------------------------------------------------------
-#include "../include/Espace3D.hpp"
+#include "../include/Boite.hpp"
 #include <vector>
 
 //------------------------------------------------------------------------------
@@ -85,5 +83,3 @@ class OctreeNode
         static double s_soft;
         static DebugStat s_stat;
 };
-
-#endif

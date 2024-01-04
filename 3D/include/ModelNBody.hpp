@@ -5,7 +5,7 @@
 
 #include "../include/Constants.hpp"
 #include "../include/Octree.hpp"
-#include "../include/Espace3D.hpp"
+#include "../include/Boite.hpp"
 #include "../include/IModel.hpp"
 
 /** \brief
