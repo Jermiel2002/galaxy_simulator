@@ -40,20 +40,21 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -ffast-math -fomit-f
 
 # Set the source files
 set(SOURCES
-    3D/src/main.cpp
-    3D/src/Boite.cpp
-    3D/src/Octree.cpp
-    3D/src/IIntegrator.cpp
-    3D/src/IntegratorADB5.cpp
-    3D/src/IntegratorADB6.cpp
-    3D/src/IntegratorRK4.cpp
-    3D/src/IntegratorRK5.cpp
-    3D/src/IntegratorRKF4.cpp
-    3D/src/ModelNBody.cpp
-    3D/src/NBodyWnd.cpp
-    3D/src/SDLWnd.cpp
-    3D/src/Particule3D.cpp
-    3D/src/Octree.cpp)
+    src/main.cpp
+    src/Boite.cpp
+    src/Octree.cpp
+    src/IIntegrator.cpp
+    src/IntegratorADB5.cpp
+    src/IntegratorADB6.cpp
+    src/IntegratorRK4.cpp
+    src/IntegratorRK5.cpp
+    src/IntegratorRKF4.cpp
+    src/ModelNBody.cpp
+    src/NBodyWnd.cpp
+    src/SDLWnd.cpp
+    src/Particule3D.cpp
+    src/PosParticule3D.cpp
+  )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
