@@ -1,0 +1,67 @@
+[
+{
+  "directory": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/build",
+  "command": "/usr/bin/g++  -I\"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/include\" -isystem /usr/include/SDL -g -Wall -fopenmp -o CMakeFiles/my-private-galaxy.dir/3D/src/main.cpp.o -c \"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/main.cpp\"",
+  "file": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/main.cpp"
+},
+{
+  "directory": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/build",
+  "command": "/usr/bin/g++  -I\"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/include\" -isystem /usr/include/SDL -g -Wall -fopenmp -o CMakeFiles/my-private-galaxy.dir/3D/src/Boite.cpp.o -c \"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/Boite.cpp\"",
+  "file": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/Boite.cpp"
+},
+{
+  "directory": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/build",
+  "command": "/usr/bin/g++  -I\"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/include\" -isystem /usr/include/SDL -g -Wall -fopenmp -o CMakeFiles/my-private-galaxy.dir/3D/src/Octree.cpp.o -c \"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/Octree.cpp\"",
+  "file": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/Octree.cpp"
+},
+{
+  "directory": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/build",
+  "command": "/usr/bin/g++  -I\"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/include\" -isystem /usr/include/SDL -g -Wall -fopenmp -o CMakeFiles/my-private-galaxy.dir/3D/src/IIntegrator.cpp.o -c \"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/IIntegrator.cpp\"",
+  "file": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/IIntegrator.cpp"
+},
+{
+  "directory": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/build",
+  "command": "/usr/bin/g++  -I\"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/include\" -isystem /usr/include/SDL -g -Wall -fopenmp -o CMakeFiles/my-private-galaxy.dir/3D/src/IntegratorADB5.cpp.o -c \"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/IntegratorADB5.cpp\"",
+  "file": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/IntegratorADB5.cpp"
+},
+{
+  "directory": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/build",
+  "command": "/usr/bin/g++  -I\"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/include\" -isystem /usr/include/SDL -g -Wall -fopenmp -o CMakeFiles/my-private-galaxy.dir/3D/src/IntegratorADB6.cpp.o -c \"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/IntegratorADB6.cpp\"",
+  "file": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/IntegratorADB6.cpp"
+},
+{
+  "directory": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/build",
+  "command": "/usr/bin/g++  -I\"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/include\" -isystem /usr/include/SDL -g -Wall -fopenmp -o CMakeFiles/my-private-galaxy.dir/3D/src/IntegratorRK4.cpp.o -c \"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/IntegratorRK4.cpp\"",
+  "file": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/IntegratorRK4.cpp"
+},
+{
+  "directory": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/build",
+  "command": "/usr/bin/g++  -I\"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/include\" -isystem /usr/include/SDL -g -Wall -fopenmp -o CMakeFiles/my-private-galaxy.dir/3D/src/IntegratorRK5.cpp.o -c \"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/IntegratorRK5.cpp\"",
+  "file": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/IntegratorRK5.cpp"
+},
+{
+  "directory": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/build",
+  "command": "/usr/bin/g++  -I\"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/include\" -isystem /usr/include/SDL -g -Wall -fopenmp -o CMakeFiles/my-private-galaxy.dir/3D/src/IntegratorRKF4.cpp.o -c \"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/IntegratorRKF4.cpp\"",
+  "file": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/IntegratorRKF4.cpp"
+},
+{
+  "directory": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/build",
+  "command": "/usr/bin/g++  -I\"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/include\" -isystem /usr/include/SDL -g -Wall -fopenmp -o CMakeFiles/my-private-galaxy.dir/3D/src/ModelNBody.cpp.o -c \"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/ModelNBody.cpp\"",
+  "file": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/ModelNBody.cpp"
+},
+{
+  "directory": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/build",
+  "command": "/usr/bin/g++  -I\"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/include\" -isystem /usr/include/SDL -g -Wall -fopenmp -o CMakeFiles/my-private-galaxy.dir/3D/src/NBodyWnd.cpp.o -c \"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/NBodyWnd.cpp\"",
+  "file": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/NBodyWnd.cpp"
+},
+{
+  "directory": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/build",
+  "command": "/usr/bin/g++  -I\"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/include\" -isystem /usr/include/SDL -g -Wall -fopenmp -o CMakeFiles/my-private-galaxy.dir/3D/src/SDLWnd.cpp.o -c \"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/SDLWnd.cpp\"",
+  "file": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/SDLWnd.cpp"
+},
+{
+  "directory": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/build",
+  "command": "/usr/bin/g++  -I\"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/include\" -isystem /usr/include/SDL -g -Wall -fopenmp -o CMakeFiles/my-private-galaxy.dir/3D/src/Particule3D.cpp.o -c \"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/Particule3D.cpp\"",
+  "file": "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/3D/src/Particule3D.cpp"
+}
+]

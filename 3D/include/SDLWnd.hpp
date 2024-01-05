@@ -13,48 +13,48 @@
 /** \brief Basic infrastructure for grafical output using SDL/OpenGL */
 class SDLWindow
 {
-    public:
-        SDLWindow(int width, int height, double axisLen, const std::string &caption);
-        virtual ~SDLWindow();
-        void MainLoop();
-        void ExitMainLoop();
-        void SetCaption(const std::string &caprion);
-        int GetWidth() const;
-        int GetHeight() const;
-        virtual void Render() = 0;
-        virtual void Update() = 0;
+public:
+    SDLWindow(int width, int height, double axisLen, const std::string &caption);
+    virtual ~SDLWindow();
+    void MainLoop();
+    void ExitMainLoop();
+    void SetCaption(const std::string &caprion);
+    int GetWidth() const;
+    int GetHeight() const;
+    virtual void Render() = 0;
+    virtual void Update() = 0;
     /**
-     * En programmation orientée objet, une méthode protégée (protected method) est une méthode d'une classe qui est accessible à la fois par la classe elle-même et par ses classes dérivées (sous-classes). 
+     * En programmation orientée objet, une méthode protégée (protected method) est une méthode d'une classe qui est accessible à la fois par la classe elle-même et par ses classes dérivées (sous-classes).
      * Cela signifie que la méthode ne peut pas être appelée depuis l'extérieur de la classe, mais elle peut être utilisée dans les classes qui héritent de cette classe.
-    */
-    protected:
-        virtual void PollEvents();
-        virtual void OnProcessEvents(uint8_t type);
+     */
+protected:
+    virtual void PollEvents();
+    virtual void OnProcessEvents(uint8_t type);
 
-        //----------------------------------
-        //Camera
-        //----------------------------------
-        const PosParticule3D &GetCamPos() const;
-        const PosParticule3D &GetCamOrient() const;
-        const PosParticule3D &GetCamLookAt() const;
-        void SetCameraOrientation(const PosParticule3D &orientation);
-        void SetCamera(const PosParticule3D &pos, const PosParticule3D &lookAt, const PosParticule3D &orient);
-        void AdjustCamera();
+    //----------------------------------
+    // Camera
+    //----------------------------------
+    const PosParticule3D &GetCamPos() const;
+    const PosParticule3D &GetCamOrient() const;
+    const PosParticule3D &GetCamLookAt() const;
+    void SetCameraOrientation(const PosParticule3D &orientation);
+    void SetCamera(const PosParticule3D &pos, const PosParticule3D &lookAt, const PosParticule3D &orient);
+    void AdjustCamera();
 
-        //-------------------------------------
-        // Basic graphics functionality
-        //-------------------------------------
-        void DrawAxis(const PosParticule3D &origin);
-        int GetFPS() const;
-        void SaveToTGA(const std::string &sName);
-        void SaveToTGA(int idx = -1);
+    //-------------------------------------
+    // Basic graphics functionality
+    //-------------------------------------
+    void DrawAxis(const PosParticule3D &origin);
+    int GetFPS() const;
+    void SaveToTGA(const std::string &sName);
+    void SaveToTGA(int idx = -1);
 
     //----------------------------------------
-    //misc
+    // misc
     //---------------------------------------------
     /**
      * Ces méthodes fournissent des fonctionnalités graphiques de base telles que dessiner un axe, obtenir le nombre d'images par seconde, et sauvegarder l'écran au format TGA.
-    */
+     */
     void ScaleAxis(double scale);
     double GetFOV() const;
     SDL_Surface *Surface();
@@ -70,21 +70,19 @@ class SDLWindow
 
 private:
     void InitGL();
-    double _fov; //Length of an axis
-    int _width; //width of the window in pixel
-    int _height; //Height of the window in pixel
+    double _fov; // Length of an axis
+    int _width;  // width of the window in pixel
+    int _height; // Height of the window in pixel
     int _fps;
     int _idxSnapshot;
 
-    PosParticule3D _camPos; //Position de la camera
-    PosParticule3D _camLookAt; //Point at which the camera is aimed
-    PosParticule3D _camOrient; // orientation of the camera 
+    PosParticule3D _camPos;    // Position de la camera
+    PosParticule3D _camLookAt; // Point at which the camera is aimed
+    PosParticule3D _camOrient; // orientation of the camera
 
     SDL_Surface *_pScreen;
 
     volatile bool _bRunning;
-
-
 };
 
 #endif

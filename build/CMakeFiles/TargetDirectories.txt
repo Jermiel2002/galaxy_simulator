@@ -1,0 +1,3 @@
+/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/build/CMakeFiles/my-private-galaxy.dir
+/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/build/CMakeFiles/edit_cache.dir
+/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/build/CMakeFiles/rebuild_cache.dir

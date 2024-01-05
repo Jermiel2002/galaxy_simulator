@@ -3,7 +3,6 @@
 
 #include "../include/IIntegrator.hpp"
 
-
 /** \brief Implementation of the ADB6 integration scheme. */
 class IntegratorADB6 final : public IIntegrator
 {

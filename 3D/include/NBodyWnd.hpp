@@ -13,7 +13,6 @@
 class NBodyWnd final : public SDLWindow
 {
 public:
-
     NBodyWnd(int sz, std::string caption);
     virtual ~NBodyWnd();
 
@@ -24,7 +23,6 @@ public:
     void Init(int num);
 
 private:
-
     enum DisplayState : unsigned int
     {
         dspNONE = 0,

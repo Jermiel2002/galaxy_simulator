@@ -3,7 +3,6 @@
 
 #include "../include/IIntegrator.hpp"
 
-
 /** \brief Implementation of the Runge-Kutta 4th order integration scheme. */
 class IntegratorRK4 final : public IIntegrator
 {
