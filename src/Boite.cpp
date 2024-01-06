@@ -13,3 +13,10 @@
 Boite::Boite() : point1(0, 0, 0), point2(1, 1, 1) {}
 
 Boite::Boite(PosParticule3D point11, PosParticule3D point22) : point1(point11), point2(point22) {}
+
+PosParticule3D Boite::GetMin() const {
+    return point1;
+}
+PosParticule3D Boite::GetMax() const {
+    return point2;
+}

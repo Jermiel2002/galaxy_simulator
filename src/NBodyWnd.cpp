@@ -6,17 +6,14 @@
 #include <limits>
 #include <omp.h>
 
-#include "../include/IntegratorRK4.h"
-#include "../include/IntegratorRK5.h"
-#include "../include/IntegratorADB6.h"
+#include "IntegratorRK4.h"
+#include "IntegratorRK5.h"
+#include "IntegratorADB6.h"
 
 NBodyWnd::NBodyWnd(int sz, std::string caption)
-    :SDLWindow(sz, sz, 30.0, caption)
-    ,_pModel(nullptr)
-    ,_pSolver(nullptr)
-    ,_camOrient(0)
-    ,_flags(dspBODIES | /*dspTREE |*/ dspAXIS | dspSTAT | dspVERBOSE)
-{}
+    :SDLWindow(sz, sz, 30.0, caption), _pModel(nullptr), _pSolver(nullptr), _camOrient(0), _flags(dspBODIES | dspAXIS | dspSTAT | dspVERBOSE)
+{
+}
 
 NBodyWnd::~NBodyWnd()
 {
@@ -34,7 +31,7 @@ void NBodyWnd::Init(int num)
     delete _pSolver;
 
     //  _pSolver = new IntegratorADB4(_pModel, 5);
-//    _pSolver = new IntegratorRK5(_pModel, _pModel->GetSuggestedTimeStep());
+    //    _pSolver = new IntegratorRK5(_pModel, _pModel->GetSuggestedTimeStep());
     _pSolver = new IntegratorADB6(_pModel, _pModel->GetSuggestedTimeStep());
     _pSolver->SetInitialState(_pModel->GetInitialState());
 
@@ -71,8 +68,8 @@ void NBodyWnd::Update()
         for (int i = 0; i < num; ++i)
         {
             _outfile << state[i].pos->x << ", "
-                    << state[i].pos->y << ", "
-                    << state[i].pos->z << ", ";
+                     << state[i].pos->y << ", "
+                     << state[i].pos->z << ", ";
         }
         _outfile << std::endl;
     }
@@ -106,7 +103,7 @@ void NBodyWnd::Render()
     {
         // Draw axis at position of the first particle
         const PosParticule3D &cm = _pModel->GetCenterOfMass();
-        DrawAxis(PosParticule3D(cm.x, cm.y,cm.z));
+        DrawAxis(PosParticule3D(cm.x, cm.y, cm.z));
     }
 
     if (_flags & dspTREE)
@@ -155,17 +152,17 @@ void NBodyWnd::DrawStat()
     OctreeNode *pRoot = _pModel->GetRootNode();
 
     const PosParticule3D &camPos = GetCamPos(),
-                &camLookAt = GetCamLookAt();
+                         &camLookAt = GetCamLookAt();
     glColor3f(1, 1, 1);
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Number of bodies (outside tree): %d (%d)", pRoot->GetNum(), pRoot->GetNumRenegades());
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Theta: %2.1f", pRoot->GetTheta());
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "FPS: %d", GetFPS());
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Time: %2.1f y", _pSolver->GetTime());
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Camera: %2.2f, %2.2f, %2.2f", camPos.x, camPos.y, camPos.z);
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "LookAt: %2.2f, %2.2f, %2.2f", camLookAt.x, camLookAt.y, camLookAt.z);
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Field of view: %2.2f pc", GetFOV());
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Calculations: %d", pRoot->StatGetNumCalc());
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Solver: %s", _pSolver->GetID().c_str());
+    TextOut(PosParticule3D(x0, y0 + dy * line++, 0), "Number of bodies (outside tree): %d (%d)", pRoot->GetNum(), pRoot->GetNumRenegades());
+    TextOut(PosParticule3D(x0, y0 + dy * line++, 0), "Theta: %2.1f", pRoot->GetTheta());
+    TextOut(PosParticule3D(x0, y0 + dy * line++, 0), "FPS: %d", GetFPS());
+    TextOut(PosParticule3D(x0, y0 + dy * line++, 0), "Time: %2.1f y", _pSolver->GetTime());
+    TextOut(PosParticule3D(x0, y0 + dy * line++, 0), "Camera: %2.2f, %2.2f, %2.2f", camPos.x, camPos.y, camPos.z);
+    TextOut(PosParticule3D(x0, y0 + dy * line++, 0), "LookAt: %2.2f, %2.2f, %2.2f", camLookAt.x, camLookAt.y, camLookAt.z);
+    TextOut(PosParticule3D(x0, y0 + dy * line++, 0), "Field of view: %2.2f pc", GetFOV());
+    TextOut(PosParticule3D(x0, y0 + dy * line++, 0), "Calculations: %d", pRoot->StatGetNumCalc());
+    TextOut(PosParticule3D(x0, y0 + dy * line++, 0), "Solver: %s", _pSolver->GetID().c_str());
 }
 
 void NBodyWnd::DrawHelp()
@@ -175,15 +172,15 @@ void NBodyWnd::DrawHelp()
     PosParticule3D p;
 
     glColor3f(1, 1, 1);
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Keyboard commands");
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "a     - display axis");
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "t     - display Barnes Hut tree");
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "s     - display statistic data");
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "c     - display center of mass");
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "b     - display particles");
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "h     - display help text");
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "0..1  - Set camera orientation");
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "pause - halt simulation");
+    TextOut(PosParticule3D(x0, y0 + dy * line++, 0), "Keyboard commands");
+    TextOut(PosParticule3D(x0, y0 + dy * line++, 0), "a     - display axis");
+    TextOut(PosParticule3D(x0, y0 + dy * line++, 0), "t     - display Barnes Hut tree");
+    TextOut(PosParticule3D(x0, y0 + dy * line++, 0), "s     - display statistic data");
+    TextOut(PosParticule3D(x0, y0 + dy * line++, 0), "c     - display center of mass");
+    TextOut(PosParticule3D(x0, y0 + dy * line++, 0), "b     - display particles");
+    TextOut(PosParticule3D(x0, y0 + dy * line++, 0), "h     - display help text");
+    TextOut(PosParticule3D(x0, y0 + dy * line++, 0), "0..1  - Set camera orientation");
+    TextOut(PosParticule3D(x0, y0 + dy * line++, 0), "pause - halt simulation");
 }
 
 void NBodyWnd::DrawROI()
@@ -238,7 +235,7 @@ void NBodyWnd::DrawTree()
 
             /**
              * déterminer la couleur à utiliser pour dessiner le nœud en fonction de son niveau (level) et du type de dessin (what).
-            */
+             */
             double col = 1 - level * 0.2;
             switch (what)
             {
@@ -255,23 +252,22 @@ void NBodyWnd::DrawTree()
                 (what == APPROX && !pNode->WasTooClose()))
             {
                 const Boite cube = pNode->GetBoite();
-                const PosParticule3D &min = cube.point1;
-                const PosParticule3D &max = cube.point2;
+                const PosParticule3D &min = cube.GetMin(), &max = cube.GetMax();
 
-                //glBegin(GL_LINE_STRIP);
+                // glBegin(GL_LINE_STRIP);
                 glBegin(GL_QUADS);
 
-                //front face
+                // front face
                 glVertex3f(min.x, min.y, min.z);
                 glVertex3f(max.x, min.y, min.z);
                 glVertex3f(max.x, max.y, min.z);
                 glVertex3f(min.x, max.y, min.z);
 
-                //Back face
-                glVertex3f(min.x,min.y,max.z);
-                glVertex3f(max.x,min.y,max.z);
-                glVertex3f(max.x,max.y,max.z);
-                glVertex3f(min.x,max.y,max.z);
+                // Back face
+                glVertex3f(min.x, min.y, max.z);
+                glVertex3f(max.x, min.y, max.z);
+                glVertex3f(max.x, max.y, max.z);
+                glVertex3f(min.x, max.y, max.z);
 
                 // Left face
                 glVertex3f(min.x, min.y, min.z);
@@ -298,7 +294,7 @@ void NBodyWnd::DrawTree()
                 glVertex3f(min.x, min.y, max.z);
 
                 glEnd();
-            
+
                 // Draw a cross at the center of mass is the corresponding flag is set
                 if (displayFlags & dspCENTER_OF_MASS && !pNode->IsExternal())
                 {
@@ -317,8 +313,8 @@ void NBodyWnd::DrawTree()
                     glBegin(GL_LINES);
                     glVertex3f(cm.x, cm.y, cm.z - len);
                     glVertex3f(cm.x, cm.y, cm.z + len);
-                    glEnd();
 
+                    glEnd();
                 }
             }
 
@@ -357,8 +353,8 @@ void NBodyWnd::DrawNode(OctreeNode *pNode, int level)
         glColor3f(col, 1, col);
 
     const Boite cube = pNode->GetBoite();
-    const PosParticule3D &min = cube.point1;
-    const PosParticule3D &max = cube.point2;
+    const PosParticule3D &min = cube.GetMin();
+    const PosParticule3D &max = cube.GetMax();
 
     glBegin(GL_QUADS);
 

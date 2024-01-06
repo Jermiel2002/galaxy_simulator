@@ -9,6 +9,7 @@ int main(int argc, char **argv)
     try
     {
         NBodyWnd wndMain(700, "NBody Simulation (Barnes Hut algorithm)");
+        std::cout << "Already here!!!!" << std::endl;
 
         // Define simulation size
         wndMain.Init(4000);

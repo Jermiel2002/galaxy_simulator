@@ -31,7 +31,10 @@ public:
     // variables
     PosParticule3D point1;
     PosParticule3D point2;
-    ParticuleData p; // une boite contient normalement des infos sur sa particule
+
+    PosParticule3D GetMin() const;
+    PosParticule3D GetMax() const;
+    // ParticuleData p; // une boite contient normalement des infos sur sa particule
 };
 
 #endif // BOITE_H
