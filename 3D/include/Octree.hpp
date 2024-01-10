@@ -38,15 +38,18 @@ class OctreeNode
 
         int GetNumRenegades() const;
         int GetNum() const;
+        double GetMass() const;
         const PosParticule3D &GetCenterOfMass() const;
         Boite &GetBoite();
+        PosParticule3D &GetPosOfParticle() const;
+        ParticuleData GetParticule() const;
 
         double GetTheta() const;
         void SetTheta(double Theta);
 
         BoiteAParticule GetTypeBoite(PosParticule3D const& p) const;
         OctreeNode* CreateOctreeNodeNode(BoiteAParticule boiteP);
-        void InsertParticule(const ParticuleData &newParticule, int level);
+        void InsertParticule(OctreeNode &newOctant, int level);
 
         void ComputeMassDistribution();
 

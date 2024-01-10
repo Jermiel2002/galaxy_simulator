@@ -1769,6 +1769,7 @@ CMakeFiles/my-private-galaxy.dir/3D/src/NBodyWnd.cpp.o
  /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/3D/include/Particule3D.hpp
  /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/3D/include/Octree.hpp
  /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/3D/include/Boite.hpp
+ /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/3D/include/Particule3D.hpp
  /usr/include/c++/11/vector
  /usr/include/c++/11/bits/stl_uninitialized.h
  /usr/include/c++/11/bits/stl_vector.h
@@ -2778,6 +2779,7 @@ CMakeFiles/my-private-galaxy.dir/3D/src/main.cpp.o
  /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/3D/include/Particule3D.hpp
  /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/3D/include/Octree.hpp
  /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/3D/include/Boite.hpp
+ /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/3D/include/Particule3D.hpp
  /usr/include/c++/11/vector
  /usr/include/c++/11/bits/stl_uninitialized.h
  /usr/include/c++/11/bits/stl_vector.h

@@ -71,6 +71,27 @@ double *ModelNBody::GetInitialState()
     return reinterpret_cast<double *>(_pInitial);
 }
 
+OctreeNode ModelNBody::CreerOctant(ParticuleData &p)
+{
+    //Determinons dans quel octant la particule p devrait être placée
+    OctreeNode::BoiteAParticule BoiteType = _root.GetTypeBoite(p._pState->pos);
+
+    OctreeNode *oct;
+    //créer un nouvel cube avec la particule à la position déterminée
+    //if(!_root._noeudFils[BoiteType])//si le root n'a pas encore un sous noeud de ce type
+    //{
+    _root._noeudFils[BoiteType] = _root.CreateOctreeNodeNode(BoiteType);
+    oct = _root._noeudFils[BoiteType];
+
+    return *oct;
+    //}
+    //_root._noeudFils[BoiteType]->_noeudFils[BoiteType] = 
+    //_root._noeudFils[BoiteType]->InsertParticule(,0);
+    //return *oct;
+
+};
+
+
 /**
  *  GetOrbitalVelocity calcule la vitesse orbitale nécessaire pour maintenir une orbite circulaire entre deux particules dans un système n-body, 
  *  en utilisant la formule de la troisième loi de Kepler.
@@ -518,9 +539,15 @@ void ModelNBody::BuiltTree(const ParticuleData &all)
                  * "all" est un objet de type ParticleData qui est passé à la fonction BuiltTree en tant que paramètre. Il contient toutes les données d'état (_pState) et auxiliaires (_pAuxState) de toutes les particules de la simulation.
                 */
                 ParticuleData p(&(all._pState[i]), &(all._pAuxState[i]));
+                //Pourpouvoir faire l'insertion il faudra construire un octant qui contient la particule et c'est cet octant qu'il faudra insérer
+                OctreeNode octant_p = CreerOctant(p);
+
+                //Il faut déterminer les coordonnees du sous cube de cette nouvelle particules de sorte qu'elle ne dépasse pas les limite de la boite englobante du root
+                _root.InsertParticule(octant_p,0);
 
                 //insert the particle, but only if its inside the roi
-                _root.InsertParticule(p,0);
+                //_root.InsertParticule();
+                //_root.InsertParticule(p,0);
                 ++ct;
             }
 

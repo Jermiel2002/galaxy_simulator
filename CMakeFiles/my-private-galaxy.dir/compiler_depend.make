@@ -1760,6 +1760,7 @@ CMakeFiles/my-private-galaxy.dir/3D/src/NBodyWnd.cpp.o: 3D/src/NBodyWnd.cpp \
   3D/include/Particule3D.hpp \
   3D/include/Octree.hpp \
   3D/include/Boite.hpp \
+  3D/include/Particule3D.hpp \
   /usr/include/c++/11/vector \
   /usr/include/c++/11/bits/stl_uninitialized.h \
   /usr/include/c++/11/bits/stl_vector.h \
@@ -2765,6 +2766,7 @@ CMakeFiles/my-private-galaxy.dir/3D/src/main.cpp.o: 3D/src/main.cpp \
   3D/include/Particule3D.hpp \
   3D/include/Octree.hpp \
   3D/include/Boite.hpp \
+  3D/include/Particule3D.hpp \
   /usr/include/c++/11/vector \
   /usr/include/c++/11/bits/stl_uninitialized.h \
   /usr/include/c++/11/bits/stl_vector.h \

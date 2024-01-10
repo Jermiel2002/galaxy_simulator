@@ -12,7 +12,7 @@ int main(int argc, char **argv)
 
         // Define simulation size
         wndMain.Init(50);
-        //wndMain.MainLoop();
+        wndMain.MainLoop();
     }
     catch (std::exception &exc)
     {

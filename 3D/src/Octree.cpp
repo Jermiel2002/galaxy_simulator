@@ -118,6 +118,22 @@ int OctreeNode::GetNum() const
     return _num;
 }
 
+double OctreeNode::GetMass() const
+{
+    return _mass;
+}
+
+
+ParticuleData OctreeNode::GetParticule() const
+{
+    return _particle;
+}
+
+PosParticule3D &OctreeNode::GetPosOfParticle() const
+{
+    return _particle._pState->pos;
+}
+
 /*-------------------------------------------------------------------*/
 
 /*
@@ -203,10 +219,12 @@ OctreeNode::BoiteAParticule OctreeNode::GetTypeBoite(PosParticule3D const& p) co
         {
             if(p.z <= _center.z)
             {
+                std::cout << "SWD\n";
                 return BoiteAParticule::SWD;
             }
             else
             {
+                std::cout << "SWU\n";
                 return BoiteAParticule::SWU;
             }
         }
@@ -214,10 +232,12 @@ OctreeNode::BoiteAParticule OctreeNode::GetTypeBoite(PosParticule3D const& p) co
         {
             if(p.z <= _center.z)
             {
+                std::cout << "NWD\n";
                 return BoiteAParticule::NWD;
             }
             else
             {
+                std::cout << "NWU\n";
                 return BoiteAParticule::NWU;
             }
         }
@@ -228,10 +248,12 @@ OctreeNode::BoiteAParticule OctreeNode::GetTypeBoite(PosParticule3D const& p) co
         {
             if(p.z <= _center.z)
             {
+                std::cout << "SED\n";
                 return BoiteAParticule::SED;
             }
             else
             {
+                std::cout << "SEU\n";
                 return BoiteAParticule::SEU;
             }
         }
@@ -239,10 +261,12 @@ OctreeNode::BoiteAParticule OctreeNode::GetTypeBoite(PosParticule3D const& p) co
         {
             if(p.z <= _center.z)
             {
+                std::cout << "NED\n";
                 return BoiteAParticule::NED;
             }
             else
             {
+                std::cout << "NEU\n";
                 return BoiteAParticule::NEU;
             }
         }
@@ -504,70 +528,87 @@ PosParticule3D OctreeNode::CalcForce(const ParticuleData &p) const
 
 
 /**Fonction pour insérer une particule dans l'arbre
- * Cette fonction insère une particule dans l'arbre en parcourant récursivement les sous noeuds
+ * Attention l'octree est composé de huit sous cube; ici si on doit insérer quelquechose ce sera des cube avec leur position et non les particules elle meme
+ * donc la fonction Insert Particule prend un octree (une boite) vérifie que ses coordonnées ne dépassent pas celles de la boite englobante, détermine où elle doit 
+ * être placé et la crée
 */
-void OctreeNode::InsertParticule(const ParticuleData &newParticule, int level)
+void OctreeNode::InsertParticule(OctreeNode &newOctant, int level)
 {
-    //Récuperons les coordonnées de la particule à insérer
-    const EtatParticule &p1 = *(newParticule._pState);
+    //On récupère les coordonnées de l'octant à insérer
+    PosParticule3D &pointMin = newOctant.GetBoite().point1;
+    PosParticule3D &pointMax = newOctant.GetBoite().point2;
 
-    //vérifions que la particule se trouve dans à l'intérieur des limites de la boite
-    //englobante du noeud de l'arbre
-    if((p1.pos.x < _boite.point1.x || p1.pos.x > _boite.point2.x) || (p1.pos.y < _boite.point1.y || p1.pos.y > _boite.point2.y) || (p1.pos.z < _boite.point1.z || p1.pos.z > _boite.point2.z))
+    //Vérifions que l'octant se trouve à l'intérieur des limites de la boite englobante
+    //1er cas : le coin inférieur gauche de la face avant est à l'intérieur de la boite englobante
+    if((pointMin.x < _boite.point1.x || pointMin.x > _boite.point2.x) || (pointMin.y < _boite.point1.y || pointMin.y > _boite.point2.y) || (pointMin.z < _boite.point1.z || pointMin.z > _boite.point2.z))
     {
+        //2em cas : le coin supérieur droit de la face arrière est à l'intérieur de la boite englobante
+        if((pointMax.x > _boite.point1.x || pointMax.x < _boite.point2.x) || (pointMax.y > _boite.point1.y || pointMax.y < _boite.point2.y) || (pointMax.z > _boite.point1.z || pointMax.z < _boite.point2.z))
+        {
+            if((newOctant.GetPosOfParticle().x < pointMin.x || newOctant.GetPosOfParticle().x > pointMax.x) || (newOctant.GetPosOfParticle().y < pointMin.y || newOctant.GetPosOfParticle().y > pointMax.y) || (newOctant.GetPosOfParticle().z < pointMin.z || newOctant.GetPosOfParticle().z > pointMax.z))
+            {
+                std::stringstream ss;
+                ss << "La particule de l'octant à la position (" << newOctant.GetPosOfParticle().x << ", " << newOctant.GetPosOfParticle().y << ", " << newOctant.GetPosOfParticle().z << "), \n"
+                << "est en dehors des limites de son octant parent à la position (" << _boite.point1.x << ", " << _boite.point1.y << ", " << _boite.point1.z << ") pour le coin inférieur gauche de la face avant\n";
+                throw std::runtime_error(ss.str());
+            }
+            std::stringstream ss;
+            ss << "L'octant à la position (" << pointMin.x << ", " << pointMin.y << ", " << pointMin.z << ") pour le coin inférieur gauche de la face avant, \n"
+            << "est en dehors des limites de l'octant parent à la position (" << _boite.point1.x << ", " << _boite.point1.y << ", " << _boite.point1.z << ") pour le coin inférieur gauche de la face avant\n";
+            throw std::runtime_error(ss.str());
+        }
         std::stringstream ss;
-        ss << "Particle position ("<<p1.pos.x<<","<<p1.pos.y<<","<<p1.pos.z<<")"
-        << "is outside tree node ("
-        <<"min.x="<<_boite.point1.x<<","
-        <<"max.x="<<_boite.point2.x<<","
-        <<"min.y="<<_boite.point1.y<<","
-        <<"max.y="<<_boite.point2.y<<","
-        <<"min.z="<<_boite.point1.z<<","
-        <<"max.z="<<_boite.point2.z<<",";
+        ss << "L'octant à la position (" << pointMin.x << ", " << pointMin.y << ", " << pointMin.z << ") pour le coin inférieur gauche de la face avant, \n"
+        << "et (" << pointMax.x << ", " << pointMax.y << ", " << pointMax.z << ") pour le coin supérieur droit de la face arrière\n"
+        << "est en dehors des limites de l'octant parent à la position (" << _boite.point1.x << ", " << _boite.point1.y << ", " << _boite.point1.z << ") pour le coin inférieur gauche de la face avant\n"
+        << "et (" << _boite.point2.x << ", " << _boite.point2.y << ", " << _boite.point2.z << ") pour le coin supérieur droit de la face arrière\n";
         throw std::runtime_error(ss.str());
     }
 
-    if(_num > 1)//Si le noeud a plus d'une particule, on descend dans l'octant approprié
+    if(_num > 1)//Si le noeud à l'intérieur de l'octant a plus d'une particule, on descend dans l'octant approprié
     {
-        //determinons le quadrant approprié pour la new particule
-        BoiteAParticule cubeDeLaParticule = GetTypeBoite(p1.pos);
-        if(!_noeudFils[cubeDeLaParticule])//si l'octant n'a pas encore un noeud associé, on le crée
+        //Déterminons l'octant approprié pour la new particule; il nous faudra la position de la nouvelle particule contenu dans le nouvel octant
+        BoiteAParticule cubeDeLaParticule = newOctant.GetTypeBoite(newOctant.GetPosOfParticle());
+        if(!_noeudFils[cubeDeLaParticule])//si l'octant englobante n'a pas encore un sous noeud (sous octant) de type cubeDeLaParticule, on le crée
             _noeudFils[cubeDeLaParticule] = CreateOctreeNodeNode(cubeDeLaParticule);
-        _noeudFils[cubeDeLaParticule]->InsertParticule(newParticule, level + 1);
-
+        _noeudFils[cubeDeLaParticule]->InsertParticule(newOctant, level+1);//si un sous noeud de ce type existe déjà on reitère l'insertion dans ce sous noeud
     }
-    else if (_num == 1)//le noeud contient déjà une particule
+    else if (_num == 1) //l'octant contient déjà une particule
     {
-        assert(IsExternal() || IsRoot());
+        assert(IsExternal() || IsRoot()); //On vérifie si ce octant est une feuille externe ou la racine
 
-        const EtatParticule &p2 = *(_particle._pState);//récup des coords de la particule déjà présente dans le noeud
+        //On va récupérer les coordonnées de la particule déjà présente
+        PosParticule3D &particulePresent = _particle._pState->pos;
+        //on va récupérer les coordonnée de la particule à insérer
+        PosParticule3D &particuleAInserer = newOctant.GetPosOfParticle();
 
-
-        /**Si la nouvelle particule a les mêmes coordonnées que la particule déjà présente dans le noeud, cela est considéré comme impossible
-         * et la nouvelle particule est ajoutée au vecteur de renegates. Sinon le noeud doit etre subdivisé
+        /**
+         * Si la new particule a les mêmes coordonnées que la particule déjà présente, dans l'octant, cela est considéré comme impossible
+         * et la nouvelle particule est ajoutée au vecteur de renegates? Sinon le noeud doit être subdivisé
         */
-        if((p1.pos.x == p2.pos.x) && (p1.pos.y == p2.pos.y) && (p1.pos.z == p2.pos.z))
-        {
-            s_renegades.push_back(newParticule);
-        }
-        else
-        {
-            BoiteAParticule cubeDeLaParticule = GetTypeBoite(p2.pos);//recup de l'octant dans lequel la particule déjà présente devrait être insérée
-            if(_noeudFils[cubeDeLaParticule] == nullptr)
+       if((particulePresent.x == particuleAInserer.x) && (particulePresent.y == particuleAInserer.y) && (particulePresent.z == particuleAInserer.z))
+       {
+            s_renegades.push_back(newOctant.GetParticule());
+       }
+       else //sinon on subdivise le noeud et on relocalise la particule déjà présente
+       {
+            BoiteAParticule cubeDeLaParticule = GetTypeBoite(particulePresent);//On récupère l'octant dans lequel la particule déjà présente se situe
+            if(_noeudFils[cubeDeLaParticule] == nullptr)//s'il n'y aucun octant de ce type auparavant, on le crée
                 _noeudFils[cubeDeLaParticule] = CreateOctreeNodeNode(cubeDeLaParticule);
-                
-            _noeudFils[cubeDeLaParticule]->InsertParticule(_particle,level+1);
+            
+            //Ensuite, on appel récursivement la fonction insert sur le sous noeud avec la particule existant, qui est ensuite réinitialisé
+            _noeudFils[cubeDeLaParticule]->InsertParticule(*this,level + 1);
             _particle.Reset();
 
-            cubeDeLaParticule = GetTypeBoite(p1.pos);
+            cubeDeLaParticule = GetTypeBoite(particuleAInserer);// On récupère le nouvel octant pour la particule à insérer
             if(!_noeudFils[cubeDeLaParticule])
                 _noeudFils[cubeDeLaParticule] = CreateOctreeNodeNode(cubeDeLaParticule);
-            _noeudFils[cubeDeLaParticule]->InsertParticule(newParticule,level+1);
-        }
+            _noeudFils[cubeDeLaParticule]->InsertParticule(newOctant,level+1);
+       }    
     }
     else if (_num == 0)
     {
-        _particle = newParticule;
+        *this = newOctant;
     }
     _num++;
 };
