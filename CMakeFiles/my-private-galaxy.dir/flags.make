@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/include -isystem /usr/include/SDL
+CXX_INCLUDES = -I"/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/include" -isystem /usr/include/SDL
 
 CXX_FLAGS = -fopenmp
 

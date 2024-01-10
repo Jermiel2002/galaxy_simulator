@@ -1,4 +1,4 @@
-# Install script for directory: /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy
+# Install script for directory: /home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -54,10 +54,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy
+CMAKE_SOURCE_DIR = "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator"
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy
+CMAKE_BINARY_DIR = "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator"
 
 #=============================================================================
 # Directory level rules for the build root directory
@@ -81,14 +81,14 @@ clean: CMakeFiles/my-private-galaxy.dir/clean
 CMakeFiles/my-private-galaxy.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/my-private-galaxy.dir/build.make CMakeFiles/my-private-galaxy.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/my-private-galaxy.dir/build.make CMakeFiles/my-private-galaxy.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14 "Built target my-private-galaxy"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/CMakeFiles" --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14 "Built target my-private-galaxy"
 .PHONY : CMakeFiles/my-private-galaxy.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/my-private-galaxy.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/CMakeFiles 14
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/CMakeFiles" 14
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/my-private-galaxy.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/mohamed/Documents/Dev Center/USPN/sda/galaxy_simulator/CMakeFiles" 0
 .PHONY : CMakeFiles/my-private-galaxy.dir/rule
 
 # Convenience name for target.

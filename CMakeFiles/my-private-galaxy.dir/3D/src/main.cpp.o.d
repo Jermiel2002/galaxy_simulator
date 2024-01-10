@@ -1,5 +1,5 @@
 CMakeFiles/my-private-galaxy.dir/3D/src/main.cpp.o: \
- /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/3D/src/main.cpp \
+ /home/mohamed/Documents/Dev\ Center/USPN/sda/galaxy_simulator/3D/src/main.cpp \
  /usr/include/stdc-predef.h /usr/include/c++/11/cstdlib \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -147,12 +147,12 @@ CMakeFiles/my-private-galaxy.dir/3D/src/main.cpp.o: \
  /usr/include/c++/11/bits/basic_ios.tcc \
  /usr/include/c++/11/bits/ostream.tcc /usr/include/c++/11/istream \
  /usr/include/c++/11/bits/istream.tcc \
- /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/3D/src/../include/NBodyWnd.hpp \
+ /home/mohamed/Documents/Dev\ Center/USPN/sda/galaxy_simulator/3D/src/../include/NBodyWnd.hpp \
  /usr/include/c++/11/fstream /usr/include/c++/11/bits/codecvt.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
  /usr/include/c++/11/bits/fstream.tcc \
- /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/3D/src/../include/../include/SDLWnd.hpp \
+ /home/mohamed/Documents/Dev\ Center/USPN/sda/galaxy_simulator/3D/src/../include/../include/SDLWnd.hpp \
  /usr/include/SDL/SDL.h /usr/include/SDL/SDL_main.h \
  /usr/include/SDL/SDL_stdinc.h /usr/include/SDL/SDL_config.h \
  /usr/include/SDL/SDL_platform.h /usr/include/c++/11/stdlib.h \
@@ -195,17 +195,17 @@ CMakeFiles/my-private-galaxy.dir/3D/src/main.cpp.o: \
  /usr/include/SDL/SDL_opengl.h /usr/include/GL/gl.h \
  /usr/include/GL/glext.h /usr/include/KHR/khrplatform.h \
  /usr/include/GL/glu.h \
- /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/3D/src/../include/../include/../include/Particule3D.hpp \
- /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/3D/src/../include/../include/Octree.hpp \
- /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/3D/src/../include/../include/../include/Boite.hpp \
+ /home/mohamed/Documents/Dev\ Center/USPN/sda/galaxy_simulator/3D/src/../include/../include/../include/Particule3D.hpp \
+ /home/mohamed/Documents/Dev\ Center/USPN/sda/galaxy_simulator/3D/src/../include/../include/Octree.hpp \
+ /home/mohamed/Documents/Dev\ Center/USPN/sda/galaxy_simulator/3D/src/../include/../include/../include/Boite.hpp \
  /usr/include/c++/11/vector /usr/include/c++/11/bits/stl_uninitialized.h \
  /usr/include/c++/11/bits/stl_vector.h \
  /usr/include/c++/11/bits/stl_bvector.h \
  /usr/include/c++/11/bits/vector.tcc \
- /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/3D/src/../include/../include/ModelNBody.hpp \
- /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/3D/src/../include/../include/../include/Constants.hpp \
- /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/3D/src/../include/../include/../include/IModel.hpp \
- /home/jermiel/Documents/Structure_donnees_avance/projet/galaxy/3D/src/../include/../include/IIntegrator.hpp \
+ /home/mohamed/Documents/Dev\ Center/USPN/sda/galaxy_simulator/3D/src/../include/../include/ModelNBody.hpp \
+ /home/mohamed/Documents/Dev\ Center/USPN/sda/galaxy_simulator/3D/src/../include/../include/../include/Constants.hpp \
+ /home/mohamed/Documents/Dev\ Center/USPN/sda/galaxy_simulator/3D/src/../include/../include/../include/IModel.hpp \
+ /home/mohamed/Documents/Dev\ Center/USPN/sda/galaxy_simulator/3D/src/../include/../include/IIntegrator.hpp \
  /usr/include/c++/11/memory /usr/include/c++/11/bits/stl_tempbuf.h \
  /usr/include/c++/11/bits/stl_raw_storage_iter.h \
  /usr/include/c++/11/bits/align.h /usr/include/c++/11/bit \
