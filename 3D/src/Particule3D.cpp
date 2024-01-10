@@ -6,38 +6,30 @@
 #include <cmath>
 
 using namespace std;
+PosParticule2D::PosParticule2D(double xCoord, double yCoord): x(xCoord), y(yCoord){}
+
 
 //codage des constructeurs pour identifier les positions d'une particule dans l'espace
-PosParticule3D::PosParticule3D(): x(0), y(0), z(0){}
-PosParticule3D::PosParticule3D(double xCoord, double yCoord, double zCoord): x(xCoord), y(yCoord), z(zCoord)
-{
+PosParticule3D::PosParticule3D(): x(0),y(0),z(0){}
+PosParticule3D::PosParticule3D(double xCoord, double yCoord, double zCoord): x(xCoord), y(yCoord), z(zCoord){}
 
-}
+EtatParticule::EtatParticule(): pos(0,0,0), vitesse(0,0,0){}
+EtatParticule::EtatParticule(PosParticule3D ppos, PosParticule3D vvitesse): pos(ppos), vitesse(vvitesse){}
 
-//codage des constructeurs pour représenter l'état d'une particule dans l'espace
-EtatParticule::EtatParticule(): pos(nullptr), vitesse(nullptr), acceleration(nullptr){}
-EtatParticule::EtatParticule(PosParticule3D *ppos,PosParticule3D *vvitesse, PosParticule3D *aacceleration): pos(ppos),vitesse(vvitesse),acceleration(aacceleration)
-{
-    assert(pos);
-    assert(vitesse);
-    assert(acceleration);
-}
-
-//codage des constructeurs pour représenter l'état auxiliaire d'une particule dans l'espace
-EtatAuxiliaire::EtatAuxiliaire():masse(0){}
-EtatAuxiliaire::EtatAuxiliaire(double weight): masse(weight)
-{
-}
+EtatAuxiliaire::EtatAuxiliaire(): masse(0){}
+EtatAuxiliaire::EtatAuxiliaire(double mmasse): masse(mmasse){}
 
 //codage des constructeurs pour représenter les données liées à une particule
-ParticuleData::ParticuleData(): _pState(nullptr), _pAuxState(nullptr){};
+ParticuleData::ParticuleData(): _pState(nullptr), _pAuxState(nullptr){}
+
 ParticuleData::ParticuleData(EtatParticule *pS, EtatAuxiliaire *pA): _pState(pS), _pAuxState(pA)
 {
     assert(_pState);
     assert(_pAuxState);
 }
-ParticuleData::ParticuleData(ParticuleData const& autre): _pState(autre._pState), _pAuxState(autre._pAuxState)
-{}
+
+ParticuleData::ParticuleData(ParticuleData const& autre): _pState(autre._pState), _pAuxState(autre._pAuxState){}
+
 ParticuleData &ParticuleData::operator=(const ParticuleData &ref)
 {
     if (this != &ref)

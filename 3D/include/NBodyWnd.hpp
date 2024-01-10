@@ -25,20 +25,24 @@ public:
 
 private:
 
+    /**
+     * L'énumération DisplayState est utilisée dans la classe NBodyWnd pour représenter différents états d'affichage pour la simulation n-body. 
+     * Chaque option peut être activée ou désactivée individuellement en les combinant à l'aide d'opérations binaires (par exemple, en utilisant l'opérateur | pour activer plusieurs options simultanément).
+    */
     enum DisplayState : unsigned int
     {
-        dspNONE = 0,
-        dspAXIS = 1 << 0,
-        dspBODIES = 1 << 1,
-        dspSTAT = 1 << 2,
-        dspTREE = 1 << 3,
-        dspTREE_COMPLETE = 1 << 4,
-        dspCENTER_OF_MASS = 1 << 5,
-        dspPAUSE = 1 << 6,
-        dspVERBOSE = 1 << 7,
-        dspHELP = 1 << 8,
-        dspARROWS = 1 << 9,
-        dspROI = 1 << 10
+        dspNONE = 0,//Aucun état d'affichage en particulier
+        dspAXIS = 1 << 0, //Activer cette option pour afficher les axes
+        dspBODIES = 1 << 1, //Activer cette option pour afficher les particules du système.
+        dspSTAT = 1 << 2, //Activer cette option pour afficher des statistiques sur la simulation.
+        dspTREE = 1 << 3, //Activer cette option pour afficher l'arbre de Barnes-Hut.
+        dspTREE_COMPLETE = 1 << 4, //Activer cette option pour afficher l'arbre de Barnes-Hut complet.
+        dspCENTER_OF_MASS = 1 << 5,//Activer cette option pour afficher le centre de masse du système.
+        dspPAUSE = 1 << 6,//Activer cette option pour mettre la simulation en pause.
+        dspVERBOSE = 1 << 7,//Activer cette option pour afficher les détails de manière verbeuse.
+        dspHELP = 1 << 8,//Activer cette option pour afficher une aide.
+        dspARROWS = 1 << 9,//Activer cette option pour afficher des flèches.
+        dspROI = 1 << 10//Activer cette option pour afficher la région d'intérêt (ROI).
     };
 
     NBodyWnd(const NBodyWnd &orig);

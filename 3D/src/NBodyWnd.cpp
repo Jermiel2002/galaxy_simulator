@@ -15,7 +15,7 @@ NBodyWnd::NBodyWnd(int sz, std::string caption)
     ,_pModel(nullptr)
     ,_pSolver(nullptr)
     ,_camOrient(0)
-    ,_flags(dspBODIES | /*dspTREE |*/ dspAXIS | dspSTAT | dspVERBOSE)
+    ,_flags(dspBODIES | dspTREE | dspAXIS | dspSTAT | dspVERBOSE)
 {}
 
 NBodyWnd::~NBodyWnd()
@@ -70,9 +70,9 @@ void NBodyWnd::Update()
         _outfile << _pSolver->GetTime() << ", ";
         for (int i = 0; i < num; ++i)
         {
-            _outfile << state[i].pos->x << ", "
-                    << state[i].pos->y << ", "
-                    << state[i].pos->z << ", ";
+            _outfile << state[i].pos.x << ", "
+                    << state[i].pos.y << ", "
+                    << state[i].pos.z << ", ";
         }
         _outfile << std::endl;
     }
@@ -106,7 +106,7 @@ void NBodyWnd::Render()
     {
         // Draw axis at position of the first particle
         const PosParticule3D &cm = _pModel->GetCenterOfMass();
-        DrawAxis(PosParticule3D(cm.x, cm.y,cm.z));
+        DrawAxis(PosParticule2D(cm.x, cm.y));
     }
 
     if (_flags & dspTREE)
@@ -140,7 +140,7 @@ void NBodyWnd::DrawBodies()
 
     for (int i = 0; i < _pModel->GetN(); ++i)
     {
-        glVertex3f(state[i].pos->x, state[i].pos->y, state[i].pos->z);
+        glVertex3f(state[i].pos.x, state[i].pos.y, state[i].pos.z);
     }
 
     glEnd();
@@ -157,15 +157,15 @@ void NBodyWnd::DrawStat()
     const PosParticule3D &camPos = GetCamPos(),
                 &camLookAt = GetCamLookAt();
     glColor3f(1, 1, 1);
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Number of bodies (outside tree): %d (%d)", pRoot->GetNum(), pRoot->GetNumRenegades());
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Theta: %2.1f", pRoot->GetTheta());
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "FPS: %d", GetFPS());
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Time: %2.1f y", _pSolver->GetTime());
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Camera: %2.2f, %2.2f, %2.2f", camPos.x, camPos.y, camPos.z);
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "LookAt: %2.2f, %2.2f, %2.2f", camLookAt.x, camLookAt.y, camLookAt.z);
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Field of view: %2.2f pc", GetFOV());
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Calculations: %d", pRoot->StatGetNumCalc());
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Solver: %s", _pSolver->GetID().c_str());
+    TextOut(x0, y0 + dy * line++, "Number of bodies (outside tree): %d (%d)", pRoot->GetNum(), pRoot->GetNumRenegades());
+    TextOut(x0, y0 + dy * line++,0, "Theta: %2.1f", pRoot->GetTheta());
+    TextOut(x0, y0 + dy * line++,0, "FPS: %d", GetFPS());
+    TextOut(x0, y0 + dy * line++,0, "Time: %2.1f y", _pSolver->GetTime());
+    TextOut(x0, y0 + dy * line++,0, "Camera: %2.2f, %2.2f, %2.2f", camPos.x, camPos.y, camPos.z);
+    TextOut(x0, y0 + dy * line++,0, "LookAt: %2.2f, %2.2f, %2.2f", camLookAt.x, camLookAt.y, camLookAt.z);
+    TextOut(x0, y0 + dy * line++,0, "Field of view: %2.2f pc", GetFOV());
+    TextOut(x0, y0 + dy * line++,0, "Calculations: %d", pRoot->StatGetNumCalc());
+    TextOut(x0, y0 + dy * line++,0, "Solver: %s", _pSolver->GetID().c_str());
 }
 
 void NBodyWnd::DrawHelp()
@@ -175,15 +175,15 @@ void NBodyWnd::DrawHelp()
     PosParticule3D p;
 
     glColor3f(1, 1, 1);
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "Keyboard commands");
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "a     - display axis");
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "t     - display Barnes Hut tree");
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "s     - display statistic data");
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "c     - display center of mass");
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "b     - display particles");
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "h     - display help text");
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "0..1  - Set camera orientation");
-    TextOut(PosParticule3D(x0, y0 + dy * line++,0), "pause - halt simulation");
+    TextOut(x0, y0 + dy * line++,0, "Keyboard commands");
+    TextOut(x0, y0 + dy * line++,0, "a     - display axis");
+    TextOut(x0, y0 + dy * line++,0, "t     - display Barnes Hut tree");
+    TextOut(x0, y0 + dy * line++,0, "s     - display statistic data");
+    TextOut(x0, y0 + dy * line++,0, "c     - display center of mass");
+    TextOut(x0, y0 + dy * line++,0, "b     - display particles");
+    TextOut(x0, y0 + dy * line++,0, "h     - display help text");
+    TextOut(x0, y0 + dy * line++,0, "0..1  - Set camera orientation");
+    TextOut(x0, y0 + dy * line++,0, "pause - halt simulation");
 }
 
 void NBodyWnd::DrawROI()

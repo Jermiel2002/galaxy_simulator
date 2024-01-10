@@ -39,13 +39,13 @@ class OctreeNode
         int GetNumRenegades() const;
         int GetNum() const;
         const PosParticule3D &GetCenterOfMass() const;
-        const Boite &GetBoite() const;
+        Boite &GetBoite();
 
         double GetTheta() const;
         void SetTheta(double Theta);
 
-        BoiteAParticule GetTypeBoite(PosParticule3D &p) const;
-        OctreeNode *CreateOctreeNodeNode(BoiteAParticule boiteP);
+        BoiteAParticule GetTypeBoite(PosParticule3D const& p) const;
+        OctreeNode* CreateOctreeNodeNode(BoiteAParticule boiteP);
         void InsertParticule(const ParticuleData &newParticule, int level);
 
         void ComputeMassDistribution();
@@ -64,7 +64,7 @@ class OctreeNode
         ParticuleData _particle;
         double _mass;              ///< Mass of all particles inside the node
         PosParticule3D _cm;                 ///< Center of Mass
-        Boite _boite;             //La boite contient les coordonnées de l'espace cubique qu'occupe une particule   
+        Boite _boite;             //La boite contient les coordonnées de l'espace cubique qu'occupe une particule, la boite englobante  
         PosParticule3D _center;             ///< Center of the node
         OctreeNode *_parent;       ///< The parent node
         int _num;                  ///< The number of particles in this node
