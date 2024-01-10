@@ -11,8 +11,8 @@ int main(int argc, char **argv)
         NBodyWnd wndMain(700, "NBody Simulation (Barnes Hut algorithm)");
 
         // Define simulation size
-        wndMain.Init(4000);
-        wndMain.MainLoop();
+        wndMain.Init(50);
+        //wndMain.MainLoop();
     }
     catch (std::exception &exc)
     {

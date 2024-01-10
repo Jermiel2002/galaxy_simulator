@@ -28,11 +28,20 @@ class ModelNBody final : public IModel
         virtual bool IsFinished(double *state) override;
         virtual double* GetInitialState() override;
 
+        //Méthodes d'accès aux paramètres d'un model
+        /**GetSuggestedTimeStep retourne la valeur du pas de temps suggéré pour la simulation du modèle
+         * Un pas de temps représente la durée entre chaque mise à jour de l'état du système
+         * Autrement dit, elle fait référence à l'intervalle de temps entre deux itérations successives d'une simulation
+        */
         double GetSuggestedTimeStep() const;
+
+        /**
+         * GetTheta retourne la valeur de l'angle theta utilisé dans le modèle (lié à l'algorithme de Barnes-Hut pour accélérer le calcul des forces gravitationnelles).
+        */
         double GetTheta() const;
-        OctreeNode * GetRootNode();
+        OctreeNode* GetRootNode();
         const EtatAuxiliaire* GetAuxState() const;
-        int GetN() const;
+        int GetN() const;//Retourne le nombre de particule dans le modèle
 
         const PosParticule3D& GetCamDir() const;
         const PosParticule3D& GetCamPos() const;
@@ -54,9 +63,9 @@ class ModelNBody final : public IModel
         EtatAuxiliaire *_pAux;                    ///< Auxilliary state information
         
         OctreeNode _root;                        ///< The root node of the barnes hut tree
-        Boite *_reperBoite;
-        PosParticule3D _pointMin;               ///point inférieur gauche coté avant du cube, of the bounding box containing all particles
-        PosParticule3D _pointMax;              ///point supérieur droit coté arrière du cube, of the bounding box containing all particles
+        Boite _reperBoite;                      //dans reperBoite on les coordonnées min et max de la boite englobante de notre particule
+        //PosParticule3D _pointMin;               ///point inférieur gauche coté avant du cube, of the bounding box containing all particles
+        //PosParticule3D _pointMax;              ///point supérieur droit coté arrière du cube, of the bounding box containing all particles
         PosParticule3D _center;                ///< The center of the simulation, the barnes hut tree is centered at this point
         PosParticule3D _camDir;                 ///< Direction of the camera
         PosParticule3D _camPos;                 ///< Position of the camera
