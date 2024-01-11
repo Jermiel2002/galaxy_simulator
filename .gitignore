@@ -1,8 +1,17 @@
 # CMake
+<<<<<<< HEAD
+=======
+CMakeFiles
+>>>>>>> mibrahim
 CMakeFiles/*
 CMakeCache.txt
 Makefile
 cmake_install.cmake
+<<<<<<< HEAD
 bin/barnes-hut-simulator
 *.tga
 build/*
+=======
+*.tga
+build/*
+>>>>>>> mibrahim

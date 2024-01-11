@@ -5,11 +5,12 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_gfxPrimitives.h>
-#include <SDL/SDL_opengl.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
+#include <SDL/SDL_opengl.h> // opengl support
+#include <GL/gl.h>          // Header File For The OpenGL32 Library
+#include <GL/glu.h>         // Header File For The GLu32 Library
 
-#include "Particule3D.h"
+#include "Particule3D.hpp"
+
 
 /** \brief Basic infrastructure for grafical output using SDL/OpenGL */
 class SDLWindow
@@ -19,22 +20,20 @@ public:
     virtual ~SDLWindow();
     void MainLoop();
     void ExitMainLoop();
-    void SetCaption(const std::string &caprion);
+    void SetCaption(const std::string &caption);
     int GetWidth() const;
     int GetHeight() const;
     virtual void Render() = 0;
     virtual void Update() = 0;
-    /**
-     * En programmation orientée objet, une méthode protégée (protected method) est une méthode d'une classe qui est accessible à la fois par la classe elle-même et par ses classes dérivées (sous-classes).
-     * Cela signifie que la méthode ne peut pas être appelée depuis l'extérieur de la classe, mais elle peut être utilisée dans les classes qui héritent de cette classe.
-     */
+
 protected:
     virtual void PollEvents();
     virtual void OnProcessEvents(uint8_t type);
 
-    //----------------------------------
-    // Camera
-    //----------------------------------
+    //-----------------------------------------
+    // Camera setup
+    //-----------------------------------------
+
     const PosParticule3D &GetCamPos() const;
     const PosParticule3D &GetCamOrient() const;
     const PosParticule3D &GetCamLookAt() const;
@@ -42,20 +41,19 @@ protected:
     void SetCamera(const PosParticule3D &pos, const PosParticule3D &lookAt, const PosParticule3D &orient);
     void AdjustCamera();
 
-    //-------------------------------------
+    //-----------------------------------------
     // Basic graphics functionality
-    //-------------------------------------
-    void DrawAxis(const PosParticule3D &origin);
+    //-----------------------------------------
+
+    void DrawAxis(const PosParticule2D &origin);
     int GetFPS() const;
     void SaveToTGA(const std::string &sName);
     void SaveToTGA(int idx = -1);
 
-    //----------------------------------------
+    //-----------------------------------------
     // misc
-    //---------------------------------------------
-    /**
-     * Ces méthodes fournissent des fonctionnalités graphiques de base telles que dessiner un axe, obtenir le nombre d'images par seconde, et sauvegarder l'écran au format TGA.
-     */
+    //-----------------------------------------
+
     void ScaleAxis(double scale);
     double GetFOV() const;
     SDL_Surface *Surface();
@@ -64,26 +62,27 @@ protected:
     static void InitFont();
     static void KillFont();
     static void TextOut(const char *fmt, ...);
-    static void TextOut(const PosParticule3D position, const char *fmt, ...);
+    static void TextOut(int x, int y, const char *fmt, ...);
     static PosParticule3D GetOGLPos(int x, int y);
 
     static GLuint s_fontBase;
 
 private:
     void InitGL();
-    double _fov; // Length of an axis
-    int _width;  // width of the window in pixel
-    int _height; // Height of the window in pixel
+
+    double _fov; ///< Length of an axis
+    int _width;  ///< Width of the window in pixel
+    int _height; ///< Height of the window in pixel
     int _fps;
     int _idxSnapshot;
 
-    PosParticule3D _camPos;    // Position de la camera
-    PosParticule3D _camLookAt; // Point at which the camera is aimed
-    PosParticule3D _camOrient; // orientation of the camera
+    PosParticule3D _camPos;    ///< Position of the camera
+    PosParticule3D _camLookAt; ///< Point atwhich the camera is aimed
+    PosParticule3D _camOrient; ///< orientation of the camera (rotation as it aims at its target)
 
     SDL_Surface *_pScreen;
 
     volatile bool _bRunning;
 };
 
-#endif//_SDL_WINDOW_H
+#endif
