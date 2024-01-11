@@ -47,7 +47,6 @@ int main()
         EtatAuxiliaire auxEtat1;
         auxEtat1.masse = 40000;//le premier particule est au milieu elle a une grosse masse
         ParticuleData particule1(&etat1,&auxEtat1);
-        OctreeNode oct1()
 
         EtatParticule etat2;
         etat2.pos = test2;
@@ -112,7 +111,7 @@ int main()
         oct.DumpNode(0,0);
         oct.ComputeMassDistribution();
         std::cout << "le centre de masse a pour coordonnées : (" << oct.GetCenterOfMass().x << ", " << oct.GetCenterOfMass().y << ", " << oct.GetCenterOfMass().z << ")\n";
-        std::cout << "la masse totale est :" << oct.GetMass();
+        //std::cout << "la masse totale est :" << oct.GetMass();
         /*
         Pour diviser le cube en 8 sous-cubes équivalents, nous pouvons utiliser les coordonnées médianes sur chaque axe. Les coordonnées du centre du cube sont simplement la moyenne des coordonnées des coins opposés. Voici les coordonnées des coins des sous-cubes et 8 points à l'intérieur de chaque sous-cube :
 

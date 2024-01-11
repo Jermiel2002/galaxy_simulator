@@ -8,7 +8,7 @@
 class OctreeNode
 {
     public:
-        
+
         /** \brief Enumeration for the Octrants. */
         enum BoiteAParticule
         {
@@ -38,18 +38,16 @@ class OctreeNode
 
         int GetNumRenegades() const;
         int GetNum() const;
-        double GetMass() const;
         const PosParticule3D &GetCenterOfMass() const;
         Boite &GetBoite();
-        PosParticule3D &GetPosOfParticle() const;
-        ParticuleData GetParticule() const;
+        void SetBoite(Boite boite);
 
         double GetTheta() const;
         void SetTheta(double Theta);
 
         BoiteAParticule GetTypeBoite(PosParticule3D const& p) const;
-        OctreeNode* CreateOctreeNodeNode(BoiteAParticule boiteP);
-        void OctreeNode::InsertParticule(OctreeNode &newOctant, int level);
+        OctreeNode *CreateOctreeNodeNode(BoiteAParticule boiteP);
+        void InsertParticule(const ParticuleData &newParticule, int level);
 
         void ComputeMassDistribution();
 
@@ -61,6 +59,9 @@ class OctreeNode
             int _nNumCalc;///< Total number of calculations for estimating the force
         };
     
+    public:
+        OctreeNode *_noeudFils[8];//un noeud est constitué de huit fils
+
     private://l'utilisateur ne doit pas modifié ces variables; pour les consulté ou modifié si nécessaire, on créera une fonction plus tard
         PosParticule3D CalcAcc(const ParticuleData &p1, const ParticuleData &p2) const;
         PosParticule3D CalcTreeForce(const ParticuleData &p) const;
@@ -79,9 +80,8 @@ class OctreeNode
 
     public:
         static double s_gamma;
-        OctreeNode *_noeudFils[8];//un noeud est constitué de huit fils
 
-    
+  
     private:
         static double s_soft;
         static DebugStat s_stat;
