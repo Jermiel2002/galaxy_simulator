@@ -120,22 +120,6 @@ int OctreeNode::GetNum() const
     return _num;
 }
 
-double OctreeNode::GetMass() const
-{
-    return _mass;
-}
-
-
-ParticuleData OctreeNode::GetParticule() const
-{
-    return _particle;
-}
-
-PosParticule3D &OctreeNode::GetPosOfParticle() const
-{
-    return _particle._pState->pos;
-}
-
 /*-------------------------------------------------------------------*/
 
 /*
@@ -221,12 +205,10 @@ OctreeNode::BoiteAParticule OctreeNode::GetTypeBoite(PosParticule3D const &p) co
         {
             if (p.z <= _center.z)
             {
-                std::cout << "SWD\n";
                 return BoiteAParticule::SWD;
             }
             else
             {
-                std::cout << "SWU\n";
                 return BoiteAParticule::SWU;
             }
         }
@@ -234,12 +216,10 @@ OctreeNode::BoiteAParticule OctreeNode::GetTypeBoite(PosParticule3D const &p) co
         {
             if (p.z <= _center.z)
             {
-                std::cout << "NWD\n";
                 return BoiteAParticule::NWD;
             }
             else
             {
-                std::cout << "NWU\n";
                 return BoiteAParticule::NWU;
             }
         }
@@ -250,12 +230,10 @@ OctreeNode::BoiteAParticule OctreeNode::GetTypeBoite(PosParticule3D const &p) co
         {
             if (p.z <= _center.z)
             {
-                std::cout << "SED\n";
                 return BoiteAParticule::SED;
             }
             else
             {
-                std::cout << "SEU\n";
                 return BoiteAParticule::SEU;
             }
         }
@@ -263,12 +241,10 @@ OctreeNode::BoiteAParticule OctreeNode::GetTypeBoite(PosParticule3D const &p) co
         {
             if (p.z <= _center.z)
             {
-                std::cout << "NED\n";
                 return BoiteAParticule::NED;
             }
             else
             {
-                std::cout << "NEU\n";
                 return BoiteAParticule::NEU;
             }
         }
@@ -324,7 +300,7 @@ OctreeNode *OctreeNode::CreateOctreeNodeNode(BoiteAParticule boiteP)
         return new OctreeNode(Boite(PosParticule3D(_center.x, _center.y, _boite.point1.z), PosParticule3D(_boite.point2.x, _boite.point2.y, _center.z)), this);
     case NEU:
         return new OctreeNode(Boite(_center, _boite.point2), this);
-
+    
     default:
     {
         std::stringstream ss;
@@ -537,21 +513,6 @@ void OctreeNode::InsertParticule(const ParticuleData &newParticule, int level)
     // englobante du noeud de l'arbre
     if ((p1.pos.x < _boite.point1.x || p1.pos.x > _boite.point2.x) || (p1.pos.y < _boite.point1.y || p1.pos.y > _boite.point2.y) || (p1.pos.z < _boite.point1.z || p1.pos.z > _boite.point2.z))
     {
-        //2em cas : le coin supérieur droit de la face arrière est à l'intérieur de la boite englobante
-        if((pointMax.x > _boite.point1.x || pointMax.x < _boite.point2.x) || (pointMax.y > _boite.point1.y || pointMax.y < _boite.point2.y) || (pointMax.z > _boite.point1.z || pointMax.z < _boite.point2.z))
-        {
-            if((newOctant.GetPosOfParticle().x < pointMin.x || newOctant.GetPosOfParticle().x > pointMax.x) || (newOctant.GetPosOfParticle().y < pointMin.y || newOctant.GetPosOfParticle().y > pointMax.y) || (newOctant.GetPosOfParticle().z < pointMin.z || newOctant.GetPosOfParticle().z > pointMax.z))
-            {
-                std::stringstream ss;
-                ss << "La particule de l'octant à la position (" << newOctant.GetPosOfParticle().x << ", " << newOctant.GetPosOfParticle().y << ", " << newOctant.GetPosOfParticle().z << "), \n"
-                << "est en dehors des limites de son octant parent à la position (" << _boite.point1.x << ", " << _boite.point1.y << ", " << _boite.point1.z << ") pour le coin inférieur gauche de la face avant\n";
-                throw std::runtime_error(ss.str());
-            }
-            std::stringstream ss;
-            ss << "L'octant à la position (" << pointMin.x << ", " << pointMin.y << ", " << pointMin.z << ") pour le coin inférieur gauche de la face avant, \n"
-            << "est en dehors des limites de l'octant parent à la position (" << _boite.point1.x << ", " << _boite.point1.y << ", " << _boite.point1.z << ") pour le coin inférieur gauche de la face avant\n";
-            throw std::runtime_error(ss.str());
-        }
         std::stringstream ss;
         ss << "Particle position (" << p1.pos.x << "," << p1.pos.y << "," << p1.pos.z << ")"
            << "is outside tree node ("
@@ -574,7 +535,7 @@ void OctreeNode::InsertParticule(const ParticuleData &newParticule, int level)
     }
     else if (_num == 1) // le noeud contient déjà une particule
     {
-        assert(IsExternal() || IsRoot()); //On vérifie si ce octant est une feuille externe ou la racine
+        assert(IsExternal() || IsRoot());
 
         const EtatParticule &p2 = *(_particle._pState); // récup des coords de la particule déjà présente dans le noeud
 
@@ -602,7 +563,7 @@ void OctreeNode::InsertParticule(const ParticuleData &newParticule, int level)
     }
     else if (_num == 0)
     {
-        *this = newOctant;
+        _particle = newParticule;
     }
     _num++;
 };
