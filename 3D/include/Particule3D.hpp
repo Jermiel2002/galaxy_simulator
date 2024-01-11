@@ -26,7 +26,7 @@ class PosParticule3D{
         //PosParticule3D fusionParticule(PosParticule3D p1, PosParticule3D p2);
 
         //PosParticule3D MultiplierParticule(PosParticule3D p, double s);*/
-        
+
         //variables
         double x;
         double y;

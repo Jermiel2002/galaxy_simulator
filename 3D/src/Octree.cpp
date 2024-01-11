@@ -12,7 +12,7 @@
 // static variables
 
 /*s_theta est une variable statique qui représente le paramètre 0 de l'algo de barnes hut. Il est utilisé pour
-* décider si un noeud doit être approximé comme une particule unique lors du calcul des forces.*/
+ * décider si un noeud doit être approximé comme une particule unique lors du calcul des forces.*/
 double OctreeNode::s_theta = 0.9;
 
 /**s_renegades est une tableau dynamique contenant des particules d'un noeud*/
@@ -22,47 +22,48 @@ std::vector<ParticuleData> OctreeNode::s_renegades;
 il contient seulement un membre _nNumCalc qui représente le nombre total de calculs effectués lors de la simulation*/
 OctreeNode::DebugStat OctreeNode::s_stat = {0};
 
-double OctreeNode::s_gamma = 0; //constante gravitationnelle
+double OctreeNode::s_gamma = 0; // constante gravitationnelle
 
 /*s_soft représente le paramètre de softening. Cela ajoute une petite constante pour éviter les singularités
 lorsque deux particules sont très proches. La valeur 0.1*0.1 est utilisée ici, représentant environ 3 années lumière.*/
 double OctreeNode::s_soft = 0.1 * 0.1;
 //--------------------------------------------------------------------------------------------------------------------------------
 
-//codage du constructeur
+// codage du constructeur
 
 /*Representons un octant : un octant ou cube regroupe une ou plusieurs particules
 
 *-------------calcul du centre de la boite (center)---------------------
 * Il faut savoir que Le centre du cube est situé à égale distance le long de chaque axe à partir du sommet inférieur gauche.
-* ajouter la moitié de la largeur(dimension x) à la coordonnée (point1 x) du coin inférieur gauche pour obtenir la coordonnée x du centre, 
+* ajouter la moitié de la largeur(dimension x) à la coordonnée (point1 x) du coin inférieur gauche pour obtenir la coordonnée x du centre,
 * faire de même pour les coordonnées y et z en ajoutant la moitié de la hauteur et de la profondeur respectivement.
 
 *--------------Comment repérer l'espace qu'occupe un octant ?-----------------
 * Pour un quadtree on utilise les coordonnées min et max respectivement des coins inférieur gauche et supérieur droit
 * Pour un OctreeNode, on va utiliser une boite car pour retrouver l'espace qu'il occupe, il suffit de connaitre les coordonnées d'un sommet et les point2
 */
-OctreeNode::OctreeNode(const Boite &reper_boite, OctreeNode *parent):
-_particle(), 
-_mass(0), 
-_cm(), 
-_boite(reper_boite),
-_center((reper_boite.point1.x + (reper_boite.point2.x/2)), (reper_boite.point1.y + (reper_boite.point2.y/2)), (reper_boite.point1.z + (reper_boite.point2.z/2))),
-_parent(parent),
-_num(0),
-_bSubdivided(false)
+OctreeNode::OctreeNode(const Boite &reper_boite, OctreeNode *parent)
+    : _particle(),
+      _mass(0),
+      _cm(),
+      _boite(reper_boite),
+      _center((reper_boite.point1.x + (reper_boite.point2.x / 2)), (reper_boite.point1.y + (reper_boite.point2.y / 2)), (reper_boite.point1.z + (reper_boite.point2.z / 2))),
+      _parent(parent),
+      _num(0),
+      _bSubdivided(false)
 {
-    //garantie d'initialisation correcte des fils.
+    // garantie d'initialisation correcte des fils.
     _noeudFils[0] = _noeudFils[1] = _noeudFils[2] = _noeudFils[3] = _noeudFils[4] = _noeudFils[5] = _noeudFils[6] = _noeudFils[7] = nullptr;
 }
 
-//definition des méthodes d'un noeud
+// definition des méthodes d'un noeud
 
-bool OctreeNode::IsRoot() const{
-    return _parent == nullptr;//renvoie true si le noeud n'a pas de parent
+bool OctreeNode::IsRoot() const
+{
+    return _parent == nullptr; // renvoie true si le noeud n'a pas de parent
 }
 
-bool OctreeNode::IsExternal() const //vérifie si un noeud est une feuille de l'OctreeNode
+bool OctreeNode::IsExternal() const // vérifie si un noeud est une feuille de l'OctreeNode
 {
     return _noeudFils[0] == nullptr &&
            _noeudFils[1] == nullptr &&
@@ -70,24 +71,27 @@ bool OctreeNode::IsExternal() const //vérifie si un noeud est une feuille de l'
            _noeudFils[4] == nullptr &&
            _noeudFils[5] == nullptr &&
            _noeudFils[6] == nullptr &&
-           _noeudFils[7] == nullptr  ;
+           _noeudFils[7] == nullptr;
 }
 
-bool OctreeNode::WasTooClose() const //utilisée pour déterminer si le nœud actuel a été subdivisé en raison d'une proximité trop grande lors du calcul des forces gravitationnelles.
+bool OctreeNode::WasTooClose() const // utilisée pour déterminer si le nœud actuel a été subdivisé en raison d'une proximité trop grande lors du calcul des forces gravitationnelles.
 {
     return _bSubdivided;
 }
 
-Boite &OctreeNode::GetBoite()//représente les point2 de la boite englobant du nœud (la boîte englobante).
+Boite &OctreeNode::GetBoite() // représente les point2 de la boite englobant du nœud (la boîte englobante).
 {
     return _boite;
 }
+void OctreeNode::SetBoite(Boite boite) // représente les point2 de la boite englobant du nœud (la boîte englobante).
+{
+    _boite = boite;
+}
 
-const PosParticule3D &OctreeNode::GetCenterOfMass() const //renvoie une référence cste vers le centre de masse d'un OctreeNode 3D
+const PosParticule3D &OctreeNode::GetCenterOfMass() const // renvoie une référence cste vers le centre de masse d'un OctreeNode 3D
 {
     return _cm;
 }
-
 
 double OctreeNode::GetTheta() const
 {
@@ -98,7 +102,6 @@ void OctreeNode::SetTheta(double theta)
 {
     s_theta = theta;
 }
-
 
 int OctreeNode::StatGetNumCalc() const
 {
@@ -111,7 +114,6 @@ int OctreeNode::GetNumRenegades() const
     return s_renegades.size();
 }
 
-
 /** \brief Returns the number of particles inside this node. */
 int OctreeNode::GetNum() const
 {
@@ -121,16 +123,16 @@ int OctreeNode::GetNum() const
 /*-------------------------------------------------------------------*/
 
 /*
-la fonction OctreeNode::StatReset() 
-cette fonction est destinée à réinitialiser les statistiques et les drapeaux de subdivision associés à un arbre Barnes-Hut, dans le contexte d'une simulation physique. 
+la fonction OctreeNode::StatReset()
+cette fonction est destinée à réinitialiser les statistiques et les drapeaux de subdivision associés à un arbre Barnes-Hut, dans le contexte d'une simulation physique.
 La partie qui réinitialise les drapeaux de subdivision est réalisée de manière récursive pour tous les nœuds de l'arbre.
 Cette opération est utilisée pour marquer tous les nœuds comme non subdivisés, indiquant potentiellement que l'arbre va être reconstruit ou mis à jour pour la prochaine phase de calculs.
 */
 void OctreeNode::StatReset()
 {
-    if(!IsRoot())
+    if (!IsRoot())
         throw std::runtime_error("Only the root node may reset statistics data.");
-    
+
     s_stat._nNumCalc = 0;
 
     struct ResetSubdivideFlags
@@ -145,7 +147,7 @@ void OctreeNode::StatReset()
             pNode->_bSubdivided = false;
             for (int i = 0; i < 8; ++i)
             {
-                if(pNode->_noeudFils[i])
+                if (pNode->_noeudFils[i])
                     ResetFlag(pNode->_noeudFils[i]);
             }
         }
@@ -153,55 +155,55 @@ void OctreeNode::StatReset()
 }
 
 /**
- * Voyons la racine de notre OctreeNode comme un grang cube contenant 8 autres sous cubes
+ * Voyons la racine de notre OctreeNode comme un grand cube contenant 8 autres sous cubes
  * en fonction du nombre de particules aléatoire dans l'espace considéré.
  * La fonction-ci redessine un grand cube vide qui occupe un espace dont les coordonnées sont fourni
  * Autrement dit, elle met à jour ses coordonnées et ses propriétés, et prépare le nœud pour une nouvelle utilisation dans la simulation physique.
-*/
+ */
 void OctreeNode::Reset(const Boite &reperBoite)
 {
-    if(!IsRoot())
+    if (!IsRoot())
         throw std::runtime_error("Only the root node may reset the tree.");
 
-    //Supprime les sous-noeuds existants et les initialise à nullptr
+    // Supprime les sous-noeuds existants et les initialise à nullptr
     for (int i = 0; i < 8; ++i)
     {
         delete _noeudFils[i];
-        _noeudFils[i] =nullptr;
+        _noeudFils[i] = nullptr;
     }
 
-    //Met à jour les coordonnées de la boite englobante
+    // Met à jour les coordonnées de la boite englobante
     _boite = reperBoite;
 
-    //Calcule et met à jour le centre de la boite englobante
-    _center = PosParticule3D((reperBoite.point1.x + (reperBoite.point2.x/2)), (reperBoite.point1.y + (reperBoite.point2.y/2)), (reperBoite.point1.z + (reperBoite.point2.z/2)));
+    // Calcule et met à jour le centre de la boite englobante
+    _center = PosParticule3D((reperBoite.point1.x + (reperBoite.point2.x / 2)), (reperBoite.point1.y + (reperBoite.point2.y / 2)), (reperBoite.point1.z + (reperBoite.point2.z / 2)));
 
-    //Réinitialise le nombre de particules dans le noeud à 0
+    // Réinitialise le nombre de particules dans le noeud à 0
     _num = 0;
 
-    //Réinitialise la masse totale du noeud à 0
+    // Réinitialise la masse totale du noeud à 0
     _mass = 0;
 
-    //Réinitialise le centre de masse à PosParticule3D(0,0,0)
-    _cm = PosParticule3D(0,0,0);
+    // Réinitialise le centre de masse à PosParticule3D(0,0,0)
+    _cm = PosParticule3D(0, 0, 0);
 
-    //Efface la liste de "renegades" (des particules qui ne sont pas correctement associé à un noeud)
+    // Efface la liste de "renegades" (des particules qui ne sont pas correctement associé à un noeud)
     s_renegades.clear();
 }
 
 /**
  * 3- Définir une fonction pour insérer une particule dans l'arbre
  * 4- Créer une fonction d'insertion principale
-*/
+ */
 
 /*Fonction pour déterminer la boite (le quadrant) d'une particule*/
-OctreeNode::BoiteAParticule OctreeNode::GetTypeBoite(PosParticule3D const& p) const
+OctreeNode::BoiteAParticule OctreeNode::GetTypeBoite(PosParticule3D const &p) const
 {
-    if(p.x <= _center.x) //SWD,NWD,SWU,NWU
+    if (p.x <= _center.x) // SWD,NWD,SWU,NWU
     {
-        if(p.y <= _center.y)//SWD,SWU
+        if (p.y <= _center.y) // SWD,SWU
         {
-            if(p.z <= _center.z)
+            if (p.z <= _center.z)
             {
                 return BoiteAParticule::SWD;
             }
@@ -210,9 +212,9 @@ OctreeNode::BoiteAParticule OctreeNode::GetTypeBoite(PosParticule3D const& p) co
                 return BoiteAParticule::SWU;
             }
         }
-        else//NWD,NWU
+        else // NWD,NWU
         {
-            if(p.z <= _center.z)
+            if (p.z <= _center.z)
             {
                 return BoiteAParticule::NWD;
             }
@@ -222,11 +224,11 @@ OctreeNode::BoiteAParticule OctreeNode::GetTypeBoite(PosParticule3D const& p) co
             }
         }
     }
-    else //SED,NED,SEU,NEU
+    else // SED,NED,SEU,NEU
     {
-        if(p.y <= _center.y)//SED,SEU
+        if (p.y <= _center.y) // SED,SEU
         {
-            if(p.z <= _center.z)
+            if (p.z <= _center.z)
             {
                 return BoiteAParticule::SED;
             }
@@ -235,9 +237,9 @@ OctreeNode::BoiteAParticule OctreeNode::GetTypeBoite(PosParticule3D const& p) co
                 return BoiteAParticule::SEU;
             }
         }
-        else//NED,NEU
+        else // NED,NEU
         {
-            if(p.z <= _center.z)
+            if (p.z <= _center.z)
             {
                 return BoiteAParticule::NED;
             }
@@ -248,7 +250,7 @@ OctreeNode::BoiteAParticule OctreeNode::GetTypeBoite(PosParticule3D const& p) co
         }
     }
 
-     if (p.x < _boite.point1.x || p.y < _boite.point1.y || p.z < _boite.point1.z || p.x > _boite.point2.x || p.y > _boite.point2.y || p.z > _boite.point2.z) //les coordonnée du particule depasse celle de la boite
+    if (p.x < _boite.point1.x || p.y < _boite.point1.y || p.z < _boite.point1.z || p.x > _boite.point2.x || p.y > _boite.point2.y || p.z > _boite.point2.z) // les coordonnée du particule depasse celle de la boite
     {
         std::stringstream ss;
         ss << "Can't determine Octant!\n"
@@ -271,44 +273,45 @@ OctreeNode::BoiteAParticule OctreeNode::GetTypeBoite(PosParticule3D const& p) co
 /**Fonction pour subdiviser un noeud
  * En gros, cette fonction crée les sous noeuds d'un noeud, divisant ainsi l'espace en huit parties égales
  * Cette fonction prend un paramètre boitP qui indique l'octant (la boite) dans lequel un nouveau noeud doit être créé
- * 
+ *
  * --> Si c'est une boite sud ouest bas (SWD), les coordonnées du coin inférieur gauche de la boite sont celle du coin inférieur gauche
  * de la boite englobante et les coordonnées représentant les point2, sont les coordonnées du centre de la boite
- * 
+ *
  * --> Si c'est une boite nord ouest bas (NWD) les coordonnées du coin inférieur gauche de la boite sont celle du coin inférieur gauche
  * de la boite englobante et les coordonnées représentant les point2, sont les coordonnées du centre de la boite
-*/
-OctreeNode* OctreeNode::CreateOctreeNodeNode(BoiteAParticule boiteP)
+ */
+OctreeNode *OctreeNode::CreateOctreeNodeNode(BoiteAParticule boiteP)
 {
     switch (boiteP)
     {
-        case SWD:  
-            return new OctreeNode(Boite(_boite.point1,_center),this);
-        case SWU:
-            return new OctreeNode(Boite(PosParticule3D(_boite.point1.x,_boite.point1.y,_center.z),PosParticule3D(_center.x,_center.y,_boite.point2.z)),this);
-        case NWD:
-            return new OctreeNode(Boite(PosParticule3D(_boite.point1.x,_center.y,_boite.point1.z),PosParticule3D(_center.x,_boite.point2.y,_center.z)),this);
-        case NWU:
-            return new OctreeNode(Boite(PosParticule3D(_boite.point1.x,_center.y,_center.z),PosParticule3D(_center.x,_boite.point2.y,_boite.point2.z)),this);
-        case SED:
-            return new OctreeNode(Boite(PosParticule3D(_center.x,_boite.point1.y,_boite.point1.z),PosParticule3D(_boite.point2.x,_center.y,_center.z)), this);
-        case SEU:
-            return new OctreeNode(Boite(PosParticule3D(_center.x,_boite.point1.y,_center.z),PosParticule3D(_boite.point2.x,_center.y,_boite.point2.z)),this);
-        case NED:
-            return new OctreeNode(Boite(PosParticule3D(_center.x,_center.y,_boite.point1.z),PosParticule3D(_boite.point2.x,_boite.point2.y,_center.z)),this);
-        case NEU:
-            return new OctreeNode(Boite(_center,_boite.point2), this);
-        default:
-        {
-            std::stringstream ss;
-            ss << "Can't determine octant!\n";
-            throw std::runtime_error(ss.str().c_str());
-        }
+    case SWD:
+        return new OctreeNode(Boite(_boite.point1, _center), this);
+    case SWU:
+        return new OctreeNode(Boite(PosParticule3D(_boite.point1.x, _boite.point1.y, _center.z), PosParticule3D(_center.x, _center.y, _boite.point2.z)), this);
+    case NWD:
+        return new OctreeNode(Boite(PosParticule3D(_boite.point1.x, _center.y, _boite.point1.z), PosParticule3D(_center.x, _boite.point2.y, _center.z)), this);
+    case NWU:
+        return new OctreeNode(Boite(PosParticule3D(_boite.point1.x, _center.y, _center.z), PosParticule3D(_center.x, _boite.point2.y, _boite.point2.z)), this);
+    case SED:
+        return new OctreeNode(Boite(PosParticule3D(_center.x, _boite.point1.y, _boite.point1.z), PosParticule3D(_boite.point2.x, _center.y, _center.z)), this);
+    case SEU:
+        return new OctreeNode(Boite(PosParticule3D(_center.x, _boite.point1.y, _center.z), PosParticule3D(_boite.point2.x, _center.y, _boite.point2.z)), this);
+    case NED:
+        return new OctreeNode(Boite(PosParticule3D(_center.x, _center.y, _boite.point1.z), PosParticule3D(_boite.point2.x, _boite.point2.y, _center.z)), this);
+    case NEU:
+        return new OctreeNode(Boite(_center, _boite.point2), this);
+
+    default:
+    {
+        std::stringstream ss;
+        ss << "Can't determine octant!\n";
+        throw std::runtime_error(ss.str().c_str());
+    }
     }
 };
 
-/*La fonction DumpNode semble être une fonction utilisée à des fins de débogage (debugging). 
-Elle affiche des informations sur le contenu du nœud de l'arbre Barnes-Hut, y compris son quadrant, 
+/*La fonction DumpNode semble être une fonction utilisée à des fins de débogage (debugging).
+Elle affiche des informations sur le contenu du nœud de l'arbre Barnes-Hut, y compris son quadrant,
 son niveau et les détails sur les particules qu'il contient.*/
 void OctreeNode::DumpNode(int oct, int level)
 {
@@ -331,17 +334,16 @@ void OctreeNode::DumpNode(int oct, int level)
     }
 }
 
-
 /**
  * La fonction OctreeNode::ComputeMassDistribution() est responsable du calcul de la masse totale de toutes les particules contenues
  * dans les noeuds enfants de chaque noeud de l'arbre ainsi que leur centre de masse. La distribution de masse
  * doit être calculé pour chaque noeud de l'arbre
-*/
+ */
 void OctreeNode::ComputeMassDistribution()
 {
     if (_num == 1)
     {
-        //on récupère les états de la particule actuel
+        // on récupère les états de la particule actuel
         EtatParticule *ps = _particle._pState;
         EtatAuxiliaire *pa = _particle._pAuxState;
         assert(ps);
@@ -355,9 +357,9 @@ void OctreeNode::ComputeMassDistribution()
         _mass = 0;
         _cm = PosParticule3D();
 
-        for (int i=0; i<8; ++i)
+        for (int i = 0; i < 8; ++i)
         {
-            if(_noeudFils[i])
+            if (_noeudFils[i])
             {
                 _noeudFils[i]->ComputeMassDistribution();
                 _mass += _noeudFils[i]->_mass;
@@ -373,35 +375,35 @@ void OctreeNode::ComputeMassDistribution()
 }
 
 /**
- * La fonction CalcAcc calcule l'accélération gravitationnelle entre deux particules en utilisant une approximation de la loi 
+ * La fonction CalcAcc calcule l'accélération gravitationnelle entre deux particules en utilisant une approximation de la loi
  * de gravité en 3D. Elle prend en compte la distance entre les particules, évite les singularités et retourne le vecteur d'accélération
  * résultant.
- * 
+ *
  * Autrement dit, elle calcul l'accélération due à la gravité exercée par la particule p2, sur la
  * particule p1.
-*/
+ */
 PosParticule3D OctreeNode::CalcAcc(const ParticuleData &p1, const ParticuleData &p2) const
 {
     PosParticule3D acc;
 
-    //on vérifie si les deux particules p1 et p2 référencent le mpeme objet en mémoire
-    if(&p1 == &p2)
+    // on vérifie si les deux particules p1 et p2 référencent le mpeme objet en mémoire
+    if (&p1 == &p2)
         return acc;
-    //on crée des références aux coordonnées de la particule p1 d'une part et de la particule p2 d'autre part pour plus de lisibilité
+    // on crée des références aux coordonnées de la particule p1 d'une part et de la particule p2 d'autre part pour plus de lisibilité
     const double &x1(p1._pState->pos.x), &y1(p1._pState->pos.y), &z1(p1._pState->pos.z);
     const double &x2(p2._pState->pos.x), &y2(p2._pState->pos.y), &z2(p2._pState->pos.z);
 
-    //on crée une référence à la masse de p2
+    // on crée une référence à la masse de p2
     const double &m2(p2._pAuxState->masse);
 
-    //calcul de la distance entre les particules
+    // calcul de la distance entre les particules
     double dist = sqrt(
-        (x1 - x2)*(x1 - x2) +
-        (y1 - y2)*(y1 - y2) +
-        (z1 - z2)*(z1 - z2) + s_soft);
+        (x1 - x2) * (x1 - x2) +
+        (y1 - y2) * (y1 - y2) +
+        (z1 - z2) * (z1 - z2) + s_soft);
 
-    //calcul de l'accélération gravitationnelle
-    if(dist > 0)
+    // calcul de l'accélération gravitationnelle
+    if (dist > 0)
     {
         double k = s_gamma * m2 / (dist * dist * dist);
 
@@ -411,45 +413,43 @@ PosParticule3D OctreeNode::CalcAcc(const ParticuleData &p1, const ParticuleData 
     }
     else
     {
-        //cas où les particules sont au même endroit
+        // cas où les particules sont au même endroit
         acc.x = acc.y = acc.z = 0;
     }
 
     return acc;
 }
 
-
 /**
  * La fonction CalcTreeForce calcule la force exercée par un noeud de l'arbre(l'octree actuel est ses enfants) sur une particule donnée p1.
-*/
+ */
 PosParticule3D OctreeNode::CalcTreeForce(const ParticuleData &p) const
 {
     PosParticule3D acc;
 
-    //variables pour la distance entre la particule et le centre de masse du noeud (dist), une cste de proportionnalité (k) et la largeur de la boite englobante du noeud (cote)
+    // variables pour la distance entre la particule et le centre de masse du noeud (dist), une cste de proportionnalité (k) et la largeur de la boite englobante du noeud (cote)
     double dist(0), k(0), cote(0);
 
     /*cas où le noeud contient une seule particule, la fonction calcule directement la force gravitationnelle
     entre cette particule et la particule p et on incrémente le nombre de calcul*/
-    if(_num == 1)
+    if (_num == 1)
     {
-        acc = CalcAcc(p,_particle);
+        acc = CalcAcc(p, _particle);
         s_stat._nNumCalc++;
     }
-    else //cas où le noeud est subdivisé
+    else // cas où le noeud est subdivisé
     {
         dist = sqrt(
-            (p._pState->pos.x - _cm.x)*(p._pState->pos.x - _cm.x) +
-            (p._pState->pos.y - _cm.y)*(p._pState->pos.y - _cm.y) +
-            (p._pState->pos.z - _cm.z)*(p._pState->pos.z - _cm.z)
-        );
+            (p._pState->pos.x - _cm.x) * (p._pState->pos.x - _cm.x) +
+            (p._pState->pos.y - _cm.y) * (p._pState->pos.y - _cm.y) +
+            (p._pState->pos.z - _cm.z) * (p._pState->pos.z - _cm.z));
         cote = _boite.point2.x - _boite.point1.x;
 
         /*On vérifie si le rapport entre la largeur de la boite englobante et la distance
         ens inférieur ou égal à un seuil s_theta. Si c'est la cas, le noeud est traité comme une particule unique, et la force gravitationnelle est calculées directement
-        comme dans le cas précédent. Sinon, le noeud est considérée comme une entité composite et la force est calculée récursivement en appelant la fonction CalcTreeForce sur 
+        comme dans le cas précédent. Sinon, le noeud est considérée comme une entité composite et la force est calculée récursivement en appelant la fonction CalcTreeForce sur
         ses huits noeuds enfants*/
-        if(cote/dist <= s_theta)
+        if (cote / dist <= s_theta)
         {
             _bSubdivided = false;
             k = s_gamma * _mass / (dist * dist * dist);
@@ -465,7 +465,7 @@ PosParticule3D OctreeNode::CalcTreeForce(const ParticuleData &p) const
             PosParticule3D buf;
             for (int q = 0; q < 8; ++q)
             {
-                if(_noeudFils[q])
+                if (_noeudFils[q])
                 {
                     buf = _noeudFils[q]->CalcTreeForce(p);
                     acc.x += buf.x;
@@ -478,22 +478,21 @@ PosParticule3D OctreeNode::CalcTreeForce(const ParticuleData &p) const
     return acc;
 }
 
-
 /** \brief Cette fonction calcule la force totale agissant sur une particule donnée p1.
  * Cette force est calcule en combinant la force provenant de l'arbre Barne Hut (calctreeforce)
  * et la force provenant des particules renégates
  */
 PosParticule3D OctreeNode::CalcForce(const ParticuleData &p) const
 {
-    //calculate the force from the barnes hut tree to the particle p
+    // calculate the force from the barnes hut tree to the particle p
     PosParticule3D acc = CalcTreeForce(p);
 
-    //calculate the force from particles not in the barnes hut tree on particle p
+    // calculate the force from particles not in the barnes hut tree on particle p
     if (s_renegades.size())
     {
-        for(std::size_t i = 0; i < s_renegades.size(); ++i)
+        for (std::size_t i = 0; i < s_renegades.size(); ++i)
         {
-            PosParticule3D buf = CalcAcc(p,s_renegades[i]);
+            PosParticule3D buf = CalcAcc(p, s_renegades[i]);
             acc.x += buf.x;
             acc.y += buf.y;
             acc.z += buf.z;
@@ -502,67 +501,64 @@ PosParticule3D OctreeNode::CalcForce(const ParticuleData &p) const
     return acc;
 }
 
-
 /**Fonction pour insérer une particule dans l'arbre
  * Cette fonction insère une particule dans l'arbre en parcourant récursivement les sous noeuds
-*/
+ */
 void OctreeNode::InsertParticule(const ParticuleData &newParticule, int level)
 {
-    //Récuperons les coordonnées de la particule à insérer
+    // Récuperons les coordonnées de la particule à insérer
     const EtatParticule &p1 = *(newParticule._pState);
 
-    //vérifions que la particule se trouve dans à l'intérieur des limites de la boite
-    //englobante du noeud de l'arbre
-    if((p1.pos.x < _boite.point1.x || p1.pos.x > _boite.point2.x) || (p1.pos.y < _boite.point1.y || p1.pos.y > _boite.point2.y) || (p1.pos.z < _boite.point1.z || p1.pos.z > _boite.point2.z))
+    // vérifions que la particule se trouve dans à l'intérieur des limites de la boite
+    // englobante du noeud de l'arbre
+    if ((p1.pos.x < _boite.point1.x || p1.pos.x > _boite.point2.x) || (p1.pos.y < _boite.point1.y || p1.pos.y > _boite.point2.y) || (p1.pos.z < _boite.point1.z || p1.pos.z > _boite.point2.z))
     {
         std::stringstream ss;
-        ss << "Particle position ("<<p1.pos.x<<","<<p1.pos.y<<","<<p1.pos.z<<")"
-        << "is outside tree node ("
-        <<"min.x="<<_boite.point1.x<<","
-        <<"max.x="<<_boite.point2.x<<","
-        <<"min.y="<<_boite.point1.y<<","
-        <<"max.y="<<_boite.point2.y<<","
-        <<"min.z="<<_boite.point1.z<<","
-        <<"max.z="<<_boite.point2.z<<",";
+        ss << "Particle position (" << p1.pos.x << "," << p1.pos.y << "," << p1.pos.z << ")"
+           << "is outside tree node ("
+           << "min.x=" << _boite.point1.x << ","
+           << "max.x=" << _boite.point2.x << ","
+           << "min.y=" << _boite.point1.y << ","
+           << "max.y=" << _boite.point2.y << ","
+           << "min.z=" << _boite.point1.z << ","
+           << "max.z=" << _boite.point2.z << ",";
         throw std::runtime_error(ss.str());
     }
 
-    if(_num > 1)//Si le noeud a plus d'une particule, on descend dans l'octant approprié
+    if (_num > 1) // Si le noeud a plus d'une particule, on descend dans l'octant approprié
     {
-        //determinons le quadrant approprié pour la new particule
+        // determinons le quadrant approprié pour la new particule
         BoiteAParticule cubeDeLaParticule = GetTypeBoite(p1.pos);
-        if(!_noeudFils[cubeDeLaParticule])//si l'octant n'a pas encore un noeud associé, on le crée
+        if (!_noeudFils[cubeDeLaParticule]) // si l'octant n'a pas encore un noeud associé, on le crée
             _noeudFils[cubeDeLaParticule] = CreateOctreeNodeNode(cubeDeLaParticule);
         _noeudFils[cubeDeLaParticule]->InsertParticule(newParticule, level + 1);
-
     }
-    else if (_num == 1)//le noeud contient déjà une particule
+    else if (_num == 1) // le noeud contient déjà une particule
     {
         assert(IsExternal() || IsRoot());
 
-        const EtatParticule &p2 = *(_particle._pState);//récup des coords de la particule déjà présente dans le noeud
-
+        const EtatParticule &p2 = *(_particle._pState); // récup des coords de la particule déjà présente dans le noeud
 
         /**Si la nouvelle particule a les mêmes coordonnées que la particule déjà présente dans le noeud, cela est considéré comme impossible
          * et la nouvelle particule est ajoutée au vecteur de renegates. Sinon le noeud doit etre subdivisé
-        */
-        if((p1.pos.x == p2.pos.x) && (p1.pos.y == p2.pos.y) && (p1.pos.z == p2.pos.z))
+         */
+        if ((p1.pos.x == p2.pos.x) && (p1.pos.y == p2.pos.y) && (p1.pos.z == p2.pos.z))
         {
             s_renegades.push_back(newParticule);
         }
         else
         {
-            BoiteAParticule cubeDeLaParticule = GetTypeBoite(p2.pos);//recup de l'octant dans lequel la particule déjà présente devrait être insérée
-            if(_noeudFils[cubeDeLaParticule] == nullptr)
+            BoiteAParticule cubeDeLaParticule = GetTypeBoite(p2.pos); // recup de l'octant dans lequel la particule déjà présente devrait être insérée
+            if (_noeudFils[cubeDeLaParticule] == nullptr)
                 _noeudFils[cubeDeLaParticule] = CreateOctreeNodeNode(cubeDeLaParticule);
-                
-            _noeudFils[cubeDeLaParticule]->InsertParticule(_particle,level+1);
+
+            _noeudFils[cubeDeLaParticule]->InsertParticule(_particle, level + 1);
             _particle.Reset();
 
             cubeDeLaParticule = GetTypeBoite(p1.pos);
-            if(!_noeudFils[cubeDeLaParticule])
+            if (!_noeudFils[cubeDeLaParticule])
                 _noeudFils[cubeDeLaParticule] = CreateOctreeNodeNode(cubeDeLaParticule);
-            _noeudFils[cubeDeLaParticule]->InsertParticule(newParticule,level+1);
+            _noeudFils[cubeDeLaParticule]->InsertParticule(newParticule, level + 1);
         }
     }
     else if (_num == 0)

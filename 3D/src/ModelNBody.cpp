@@ -9,25 +9,25 @@
 
 using namespace std;
 
-ModelNBody::ModelNBody():IModel("N-Body simulation (3D)"),
-                            _pInitial(nullptr),
-                            _pAux(nullptr),
-                            _reperBoite(),
-                            _root(OctreeNode(Boite(PosParticule3D(),PosParticule3D()))),
-                            //_pointMin(_root.GetBoite().point1),
-                            //_pointMax(_root.GetBoite().point2),
-                            _center(),
-                            _camDir(),
-                            _camPos(),
-                            _roi(1),
-                            _timeStep(1),
-                            _num(0),
-                            _bVerbose(true)
+ModelNBody::ModelNBody() : IModel("N-Body simulation (3D)"),
+                           _pInitial(nullptr),
+                           _pAux(nullptr),
+                           _reperBoite(),
+                           _root(OctreeNode(Boite(PosParticule3D(), PosParticule3D()))),
+                           //_pointMin(_root.GetBoite().point1),
+                           //_pointMax(_root.GetBoite().point2),
+                           _center(),
+                           _camDir(),
+                           _camPos(),
+                           _roi(1),
+                           _timeStep(1),
+                           _num(0),
+                           _bVerbose(true)
 {
     OctreeNode::s_gamma = gamma_1;
     Init();
-    //InitCollision();
-    //Init3Body;
+    // InitCollision();
+    // Init3Body;
 }
 
 ModelNBody::~ModelNBody()
@@ -41,7 +41,8 @@ void ModelNBody::SetROI(double roi)
     _roi = roi;
 }
 
-double ModelNBody::GetSuggestedTimeStep() const{
+double ModelNBody::GetSuggestedTimeStep() const
+{
     return _timeStep;
 }
 
@@ -72,93 +73,93 @@ double *ModelNBody::GetInitialState()
 }
 
 /**
- *  GetOrbitalVelocity calcule la vitesse orbitale nécessaire pour maintenir une orbite circulaire entre deux particules dans un système n-body, 
+ *  GetOrbitalVelocity calcule la vitesse orbitale nécessaire pour maintenir une orbite circulaire entre deux particules dans un système n-body,
  *  en utilisant la formule de la troisième loi de Kepler.
-*/
+ */
 void ModelNBody::GetOrbitalVelocity(const ParticuleData &p1, const ParticuleData &p2)
 {
     double x1 = p1._pState->pos.x, y1 = p1._pState->pos.y, z1 = p1._pState->pos.z, m1 = p1._pAuxState->masse;
     double x2 = p2._pState->pos.x, y2 = p2._pState->pos.y, z2 = p2._pState->pos.z;
 
-    //Calcul de la distance entre les deux particules
+    // Calcul de la distance entre les deux particules
     double r[3], dist;
     r[0] = x1 - x2;
     r[1] = y1 - y2;
     r[2] = z1 - z2;
 
-    //disantance in parsec
+    // disantance in parsec
     dist = sqrt((r[0] * r[0]) + (r[1] * r[1]) + (r[2] * r[2]));
 
-    //Calcul de la vitesse orbitale nécessaire
-    double v = sqrt(gamma_1 * m1/dist);
+    // Calcul de la vitesse orbitale nécessaire
+    double v = sqrt(gamma_1 * m1 / dist);
 
-    //Calcul du vecteur de vitesse perpendiculaire au vecteur de distance 
+    // Calcul du vecteur de vitesse perpendiculaire au vecteur de distance
     double &vx = p2._pState->vitesse.x, &vy = p2._pState->vitesse.y, &vz = p2._pState->vitesse.z;
-    vx = (r[1]/dist) * v;
-    vy = (-r[0]/dist) * v;
-    vz = (-r[2]/dist) * v;
+    vx = (r[1] / dist) * v;
+    vy = (-r[0] / dist) * v;
+    vz = (-r[2] / dist) * v;
 }
 
 void ModelNBody::ResetDim(int num, double stepsize)
 {
-    _num = num;//Mise à jour du nombre de particules dans le modèle
-    SetDim(_num * 8);//Mise à jour de la dimension du modèle en fonction du nombre de particules
+    _num = num;       // Mise à jour du nombre de particules dans le modèle
+    SetDim(_num * 8); // Mise à jour de la dimension du modèle en fonction du nombre de particules
 
-    delete _pInitial;//libère la mémoire à l'état inital des particules
-    _pInitial = new EtatParticule[num];//Alloue une nouvelle mémoire pour l'état initial des particules en fonction du new nbr de particules
+    delete _pInitial;                   // libère la mémoire à l'état inital des particules
+    _pInitial = new EtatParticule[num]; // Alloue une nouvelle mémoire pour l'état initial des particules en fonction du new nbr de particules
 
-    delete _pAux;//libère la mémoire associé à l'état auxiliaire
-    _pAux = new EtatAuxiliaire[num];//Alloue une nouvelle mémoire pour l'état auxiliaire des particules précédentes
+    delete _pAux;                    // libère la mémoire associé à l'état auxiliaire
+    _pAux = new EtatAuxiliaire[num]; // Alloue une nouvelle mémoire pour l'état auxiliaire des particules précédentes
 
     /**
      * Le pas de temps est une mesure discrète qui détermine l'intervalle entre chaque itération de la simulation
-    */
-    _timeStep = stepsize;//Mise à jour du pas de temps de la simulation
+     */
+    _timeStep = stepsize; // Mise à jour du pas de temps de la simulation
 
-    //Mise à jour du la boite englobante et du centre du modèle
+    // Mise à jour du la boite englobante et du centre du modèle
     _root.GetBoite().point2.x = _root.GetBoite().point2.y = _root.GetBoite().point2.z = std::numeric_limits<double>::min();
     _root.GetBoite().point1.x = _root.GetBoite().point1.y = _root.GetBoite().point1.z = std::numeric_limits<double>::max();
-    _center = PosParticule3D(0,0,0);
+    _center = PosParticule3D(0, 0, 0);
 }
 
 /*Init initialise un modèle de simulation N-Body avec des particules en utilisant un algorithme spécifique*/
 void ModelNBody::Init()
 {
-    //Reset model size
+    // Reset model size
     ResetDim(5000, 100000);
-    //ResetDim(1,5);
+    // ResetDim(1,5);
 
     double mass = 0; // utilisée pour stocker la masse totale du système.
 
-    //Une double boucle (for) est utilisée pour initialiser les particules.
+    // Une double boucle (for) est utilisée pour initialiser les particules.
     int ct = 0;
-    ParticuleData blackHole/*particule spéciale trou noir*/, macho[10]/*tableau de particules*/;
+    ParticuleData blackHole /*particule spéciale trou noir*/, macho[10] /*tableau de particules*/;
 
     /**
      * Les trois boucle imbriquées sont utilisées pour initialiser les particules en fonction des
      * indices k, l. Ces indices controlent la configuration spatiale des particules dans le modèle
-     * 
+     *
      * k controle le nombre d'anneuax concentriques. Prenons au total 40.
      * l controle la position des particules à l'intérieur de chaque anneau
-     * 
+     *
      * Chaque groupe correspond à un anneau concentrique de particules autour du centre du modèle
-     * Autrement dit, les particules sont positionnées de manière à former un cercle ou un anneau avec le centre du 
+     * Autrement dit, les particules sont positionnées de manière à former un cercle ou un anneau avec le centre du
      * modèle comme point central
      * Plus précisement, chaque anneau est constitué de particules qui se trouvent à une distance fixe du centre du modèle
      * Les particules à l'intérieur d'un même anneau sont positionnées de manière équidistante les unes des autres sur le cercle ou l'anneau
-    */
-    for(int k = 0; k < 80; ++k)
+     */
+    for (int k = 0; k < 80; ++k)
     {
         for (int l = 0; l < 100; ++l)
         {
-            if (ct >= _num)//si le nombre particules inséré plus grand que le nombre de particules défini(_num) dans notre modèle
+            if (ct >= _num) // si le nombre particules inséré plus grand que le nombre de particules défini(_num) dans notre modèle
                 goto hell;
 
             /*À chaque itération des boucles, les références st et st_aux sont utilisées pour accéder aux états initial et auxiliaire d'une particule.*/
             EtatParticule &st = _pInitial[ct];
             EtatAuxiliaire &st_aux = _pAux[ct];
 
-            if (ct == 0)//La première particule est un trou noir spécial avec une masse importante, positionné au centre.
+            if (ct == 0) // La première particule est un trou noir spécial avec une masse importante, positionné au centre.
             {
                 blackHole._pState = &st;
                 blackHole._pAuxState = &st_aux;
@@ -178,7 +179,7 @@ void ModelNBody::Init()
                 st.pos.y = 5000;
                 st.pos.z = 5000;
 
-                GetOrbitalVelocity(blackHole, ParticuleData(&st,&st_aux));
+                GetOrbitalVelocity(blackHole, ParticuleData(&st, &st_aux));
             }
             else if (ct == 2)
             {
@@ -190,37 +191,46 @@ void ModelNBody::Init()
                 st.pos.y = -5000;
                 st.pos.z = -5000;
 
-                GetOrbitalVelocity(blackHole, ParticuleData(&st,&st_aux));
+                GetOrbitalVelocity(blackHole, ParticuleData(&st, &st_aux));
             }
             else
             {
                 /**
                  * Ici on va utilisé les coordonnées sphériques pour positionner les particules. Les coordonnées spériques nécessite trois paramètres:
                  * la distance radiale(r), l'angle azimutal(theta) et l'angle polaire(phi)
-                */
+                 */
                 st_aux.masse = 0.76 + 100 * ((double)rand() / RAND_MAX);
-                double rad = 1200 + k*100;//La distance radiale de la particule courante par rapport au centre est calculée en fonction de l'indice kk
-                double theta = 2 * M_PI * l /100;
-                double phi = M_PI /2.0 ;//angle polaire (90 degrés pour rester dans le plan)
+                double rad = 1200 + k * 100; // La distance radiale de la particule courante par rapport au centre est calculée en fonction de l'indice kk
+                double theta = 2 * M_PI * l / 100;
+                double phi = M_PI / 2.0; // angle polaire (90 degrés pour rester dans le plan)
 
-                //Ajouter une certaine aléatoire aux coordonnées sphériques
-                double randRadius = ((double)rand() / RAND_MAX) * 100; //Ajoute un rayon aléatoire pour une distribution plus naturelle
-                double randTheta = 2 * M_PI * ((double)rand() / RAND_MAX); //Ajouter un angle azimutal aléatoire
-                double randPhi = 2 * M_PI * ((double)rand() / RAND_MAX); // Ajouter un angle polaire aléatoire
+                // Ajouter une certaine aléatoire aux coordonnées sphériques
+                double randRadius = ((double)rand() / RAND_MAX) * 100;     // Ajoute un rayon aléatoire pour une distribution plus naturelle
+                double randTheta = 2 * M_PI * ((double)rand() / RAND_MAX); // Ajouter un angle azimutal aléatoire
+                double randPhi = 2 * M_PI * ((double)rand() / RAND_MAX);   // Ajouter un angle polaire aléatoire
 
                 st.pos.x = (rad + randRadius) * sin(phi + randPhi) * cos(theta + randTheta);
                 st.pos.y = (rad + randRadius) * sin(phi + randPhi) * sin(theta + randTheta);
                 st.pos.z = (rad + randRadius) * cos(phi + randPhi);
-                GetOrbitalVelocity(blackHole, ParticuleData(&st,&st_aux));
+                GetOrbitalVelocity(blackHole, ParticuleData(&st, &st_aux));
             }
 
             // determine the size of the area including all particles
-            _root.GetBoite().point2.x = std::max(_root.GetBoite().point2.x,st.pos.x);
-            _root.GetBoite().point2.y = std::max(_root.GetBoite().point2.y, st.pos.y);
-            _root.GetBoite().point2.z = std::max(_root.GetBoite().point2.z,st.pos.z);
-            _root.GetBoite().point1.x = std::max(_root.GetBoite().point1.x,st.pos.x);
-            _root.GetBoite().point1.y = std::max(_root.GetBoite().point1.y, st.pos.y);
-            _root.GetBoite().point1.z = std::max(_root.GetBoite().point1.z,st.pos.z);
+            // _root.GetBoite().point2.x = std::max(_root.GetBoite().point2.x, st.pos.x);
+            // _root.GetBoite().point2.y = std::max(_root.GetBoite().point2.y, st.pos.y);
+            // _root.GetBoite().point2.z = std::max(_root.GetBoite().point2.z, st.pos.z);
+            // _root.GetBoite().point1.x = std::min(_root.GetBoite().point1.x, st.pos.x);
+            // _root.GetBoite().point1.y = std::min(_root.GetBoite().point1.y, st.pos.y);
+            // _root.GetBoite().point1.z = std::min(_root.GetBoite().point1.z, st.pos.z);
+
+            _root.SetBoite(Boite(PosParticule3D(
+                                     std::min(_root.GetBoite().point1.x, st.pos.x),
+                                     std::min(_root.GetBoite().point1.y, st.pos.y),
+                                     std::min(_root.GetBoite().point1.z, st.pos.z)),
+                                 PosParticule3D(
+                                     std::max(_root.GetBoite().point2.x, st.pos.x),
+                                     std::max(_root.GetBoite().point2.y, st.pos.y),
+                                     std::max(_root.GetBoite().point2.z, st.pos.z))));
 
             _center.x += st.pos.x * st_aux.masse;
             _center.y += st.pos.y * st_aux.masse;
@@ -229,35 +239,44 @@ void ModelNBody::Init()
             ++ct;
         }
     }
-    /**
-     * Si le nombre particules inséré plus grand que le nombre de particules défini(_num) dans notre modèle alors on redéfinit
-     * la région d'intérêt (_ROI) et ajuster la position des particules dans cette région*/
-    hell:
-        //compute the center of mass
-        _center.x /= mass;
-        _center.y /= mass;
-        _center.z /= mass;
-        
-        // The Barnes Hut algorithm needs square shaped quadrants.
-        // calculate the height of the square including all particles (and a bit more space)
-        _roi = 1.5 * std::max(std::max(_root.GetBoite().point2.x - _root.GetBoite().point1.x, _root.GetBoite().point2.y - _root.GetBoite().point1.y),_root.GetBoite().point2.z - _root.GetBoite().point1.z);
+/**
+ * Si le nombre particules inséré plus grand que le nombre de particules défini(_num) dans notre modèle alors on redéfinit
+ * la région d'intérêt (_ROI) et ajuster la position des particules dans cette région*/
+hell:
+    // compute the center of mass
+    _center.x /= mass;
+    _center.y /= mass;
+    _center.z /= mass;
 
-        // compute the center of the region including all particles
-        _root.GetBoite().point1.x = _center.x - _roi;
-        _root.GetBoite().point2.x = _center.x + _roi;
-        _root.GetBoite().point1.y = _center.y - _roi;
-        _root.GetBoite().point2.y = _center.y + _roi;
-        _root.GetBoite().point1.z = _center.z - _roi;
-        _root.GetBoite().point2.z = _center.z + _roi;
-        
+    // The Barnes Hut algorithm needs square shaped quadrants.
+    // calculate the height of the square including all particles (and a bit more space)
+    _roi = 1.5 * std::max(std::max(_root.GetBoite().point2.x - _root.GetBoite().point1.x, _root.GetBoite().point2.y - _root.GetBoite().point1.y), _root.GetBoite().point2.z - _root.GetBoite().point1.z);
+
+    // compute the center of the region including all particles
+    // _root.GetBoite().point1.x = _center.x - _roi;
+    // _root.GetBoite().point2.x = _center.x + _roi;
+    // _root.GetBoite().point1.y = _center.y - _roi;
+    // _root.GetBoite().point2.y = _center.y + _roi;
+    // _root.GetBoite().point1.z = _center.z - _roi;
+    // _root.GetBoite().point2.z = _center.z + _roi;
+
+    _root.SetBoite(Boite(PosParticule3D(
+                             _center.x - _roi,
+                             _center.y - _roi,
+                             _center.z - _roi),
+                         PosParticule3D(
+                             _center.x + _roi,
+                             _center.y + _roi,
+                             _center.z + _roi)));
+
     std::cout << "Initial particle distribution area\n";
     std::cout << "----------------------------------\n";
     std::cout << "Particle spread:\n";
     std::cout << "  xmin   = " << _root.GetBoite().point1.x << ", ymin=" << _root.GetBoite().point1.y << ", zmin=" << _root.GetBoite().point1.z << "\n";
     std::cout << "  xmax   = " << _root.GetBoite().point2.y << ", ymax=" << _root.GetBoite().point2.y << ", zmax=" << _root.GetBoite().point2.z << "\n";
     std::cout << "Bounding box:\n";
-    std::cout << "  center = " << _center.x << ", cy  =" << _center.y << _center.z << "\n";
-    std::cout << "  roi    = " << _roi << "\n";        
+    std::cout << "  center = " << _center.x << ", cy  =" << _center.y << ", cz  =" << _center.z << "\n";
+    std::cout << "  roi    = " << _roi << "\n";
 }
 
 /**
@@ -278,10 +297,10 @@ double theta=π⋅((double)rand()/RAND_MAX)double theta=π⋅((double)rand()/RAN
 Cela vous donnera un angle polaire aléatoire compris entre 00 et ππ.
 */
 
-void ModelNBody::InitCollision()//initialise les particules du modèle pour simuler une collision entre deux trous noirs (black holes)
+void ModelNBody::InitCollision() // initialise les particules du modèle pour simuler une collision entre deux trous noirs (black holes)
 {
     ResetDim(5000, 100);
-    //ResetDim(100,50);
+    // ResetDim(100,50);
 
     ParticuleData blackHole;
     ParticuleData blackHole2;
@@ -291,7 +310,7 @@ void ModelNBody::InitCollision()//initialise les particules du modèle pour simu
         EtatParticule &st = _pInitial[i];
         EtatAuxiliaire &st_aux = _pAux[i];
 
-        if(i == 0)//premiere particule, elle est spéciale et représente une trace qui n'est pas partie de la simulation principale.
+        if (i == 0) // premiere particule, elle est spéciale et représente une trace qui n'est pas partie de la simulation principale.
         {
             blackHole._pState = &st;
             blackHole._pAuxState = &st_aux;
@@ -300,30 +319,29 @@ void ModelNBody::InitCollision()//initialise les particules du modèle pour simu
             st.vitesse.x = st.vitesse.y = st.vitesse.z = 0;
             st_aux.masse = 1000000; // 431000;   // 4.31 Millionen Sonnenmassen
         }
-        else if(i < 4000)//initalisation des particules dans la région externe, en leur attribuant des orbites aléatoires
-        //else if(i < 100)
+        else if (i < 4000) // initalisation des particules dans la région externe, en leur attribuant des orbites aléatoires
+        // else if(i < 100)
         {
             const double rad = 10;
             double r = 0.1 + .8 * (rad * ((double)rand() / RAND_MAX));
             double theta = 2.0 * M_PI * ((double)rand() / RAND_MAX);
-            double phi = M_PI * ((double)rand()/RAND_MAX);//angle polaire 3D (angle vertical)
+            double phi = M_PI * ((double)rand() / RAND_MAX); // angle polaire 3D (angle vertical)
 
-            //Ajouter une certaine aléatoire aux coordonnées sphériques
-            double randRadius = ((double)rand() / RAND_MAX) * 100; //Ajoute un rayon aléatoire pour une distribution plus naturelle
-            double randTheta = 2 * M_PI * ((double)rand() / RAND_MAX); //Ajouter un angle azimutal aléatoire
-            double randPhi = 2 * M_PI * ((double)rand() / RAND_MAX); // Ajouter un angle polaire aléatoire
+            // Ajouter une certaine aléatoire aux coordonnées sphériques
+            double randRadius = ((double)rand() / RAND_MAX) * 100;     // Ajoute un rayon aléatoire pour une distribution plus naturelle
+            double randTheta = 2 * M_PI * ((double)rand() / RAND_MAX); // Ajouter un angle azimutal aléatoire
+            double randPhi = 2 * M_PI * ((double)rand() / RAND_MAX);   // Ajouter un angle polaire aléatoire
 
-            st_aux.masse = 0.03 + 20 * ((double)rand() / RAND_MAX);//entre [0.03,20]
+            st_aux.masse = 0.03 + 20 * ((double)rand() / RAND_MAX); // entre [0.03,20]
 
-            st.pos.x = r * sin(phi+randPhi)*cos(theta+randTheta);
-            st.pos.y = r * sin(phi+randPhi)*sin(theta+randTheta);
-            st.pos.z = r * cos(phi+randPhi);
-
+            st.pos.x = r * sin(phi + randPhi) * cos(theta + randTheta);
+            st.pos.y = r * sin(phi + randPhi) * sin(theta + randTheta);
+            st.pos.z = r * cos(phi + randPhi);
 
             GetOrbitalVelocity(blackHole, ParticuleData(&st, &st_aux));
         }
-        else if (i == 4000)//une deuxième particule est créée avec une masse importante et une orbite autour du centre
-        //else if (i == 100)
+        else if (i == 4000) // une deuxième particule est créée avec une masse importante et une orbite autour du centre
+        // else if (i == 100)
         {
             blackHole2._pState = &st;
             blackHole2._pAuxState = &st_aux;
@@ -335,24 +353,23 @@ void ModelNBody::InitCollision()//initialise les particules du modèle pour simu
             blackHole2._pState->vitesse.y *= 0.9;
             blackHole2._pState->vitesse.z *= 0.9;
         }
-        else//Ces particules sont générées dans une région interne et sont influencées par le deuxième trou noir. Leur vitesse est ajustée en fonction de la vitesse du trou noir.
+        else // Ces particules sont générées dans une région interne et sont influencées par le deuxième trou noir. Leur vitesse est ajustée en fonction de la vitesse du trou noir.
         {
             const double rad = 3;
             double r = 0.1 + .8 * (rad * ((double)rand() / RAND_MAX));
             double theta = 2.0 * M_PI * ((double)rand() / RAND_MAX);
-            double phi = M_PI * ((double)rand()/RAND_MAX);//angle polaire 3D
+            double phi = M_PI * ((double)rand() / RAND_MAX); // angle polaire 3D
 
-            //Ajouter une certaine aléatoire aux coordonnées sphériques
-            double randRadius = ((double)rand() / RAND_MAX) * 100; //Ajoute un rayon aléatoire pour une distribution plus naturelle
-            double randTheta = 2 * M_PI * ((double)rand() / RAND_MAX); //Ajouter un angle azimutal aléatoire
-            double randPhi = 2 * M_PI * ((double)rand() / RAND_MAX); // Ajouter un angle polaire aléatoire
-
+            // Ajouter une certaine aléatoire aux coordonnées sphériques
+            double randRadius = ((double)rand() / RAND_MAX) * 100;     // Ajoute un rayon aléatoire pour une distribution plus naturelle
+            double randTheta = 2 * M_PI * ((double)rand() / RAND_MAX); // Ajouter un angle azimutal aléatoire
+            double randPhi = 2 * M_PI * ((double)rand() / RAND_MAX);   // Ajouter un angle polaire aléatoire
 
             st_aux.masse = 0.03 + 20 * ((double)rand() / RAND_MAX);
 
-            st.pos.x = blackHole2._pState->pos.x + r * sin(phi+randPhi)*cos(theta+randTheta);
-            st.pos.y = blackHole2._pState->pos.y + r * sin(phi+randPhi)*sin(theta+randTheta);
-            st.pos.z = blackHole2._pState->pos.x + r * cos(phi+randPhi);
+            st.pos.x = blackHole2._pState->pos.x + r * sin(phi + randPhi) * cos(theta + randTheta);
+            st.pos.y = blackHole2._pState->pos.y + r * sin(phi + randPhi) * sin(theta + randTheta);
+            st.pos.z = blackHole2._pState->pos.x + r * cos(phi + randPhi);
 
             GetOrbitalVelocity(blackHole2, ParticuleData(&st, &st_aux));
 
@@ -360,29 +377,46 @@ void ModelNBody::InitCollision()//initialise les particules du modèle pour simu
             st.vitesse.y += blackHole2._pState->vitesse.y;
             st.vitesse.z += blackHole2._pState->vitesse.z;
         }
-            //_root.GetBoite().point1; on calcul les positions par rapport à la position du noeud racine; or le noeud racine pour identifé la position de sa boite englobante....
-            // determine the size of the area including all particle
-            //_pointMax.x = std::max(_pointMax.x,st.pos.x);
-            _root.GetBoite().point2.x = std::max(_root.GetBoite().point2.x,st.pos.x);
-            _root.GetBoite().point2.y = std::max(_root.GetBoite().point2.y, st.pos.y);
-            _root.GetBoite().point2.z = std::max(_root.GetBoite().point2.z,st.pos.z);
-            _root.GetBoite().point1.x = std::max(_root.GetBoite().point1.x,st.pos.x);
-            _root.GetBoite().point1.y = std::max(_root.GetBoite().point1.y, st.pos.y);
-            _root.GetBoite().point1.z = std::max(_root.GetBoite().point1.z,st.pos.z);
+        //_root.GetBoite().point1; on calcul les positions par rapport à la position du noeud racine; or le noeud racine pour identifé la position de sa boite englobante....
+        // determine the size of the area including all particle
+        //_pointMax.x = std::max(_pointMax.x,st.pos.x);
+        //     _root.GetBoite().point2.x = std::max(_root.GetBoite().point2.x, st.pos.x);
+        //     _root.GetBoite().point2.y = std::max(_root.GetBoite().point2.y, st.pos.y);
+        //     _root.GetBoite().point2.z = std::max(_root.GetBoite().point2.z, st.pos.z);
+        //     _root.GetBoite().point1.x = std::max(_root.GetBoite().point1.x, st.pos.x);
+        //     _root.GetBoite().point1.y = std::max(_root.GetBoite().point1.y, st.pos.y);
+        //     _root.GetBoite().point1.z = std::max(_root.GetBoite().point1.z, st.pos.z);
+        _root.SetBoite(Boite(PosParticule3D(
+                                 std::min(_root.GetBoite().point1.x, st.pos.x),
+                                 std::min(_root.GetBoite().point1.y, st.pos.y),
+                                 std::min(_root.GetBoite().point1.z, st.pos.z)),
+                             PosParticule3D(
+                                 std::max(_root.GetBoite().point2.x, st.pos.x),
+                                 std::max(_root.GetBoite().point2.y, st.pos.y),
+                                 std::max(_root.GetBoite().point2.z, st.pos.z))));
     }
 
-    double l = 1.05 * std::max(std::max(_root.GetBoite().point2.x - _root.GetBoite().point1.x, _root.GetBoite().point2.y - _root.GetBoite().point1.y),_root.GetBoite().point2.z - _root.GetBoite().point1.z);
+    double l = 1.05 * std::max(std::max(_root.GetBoite().point2.x - _root.GetBoite().point1.x, _root.GetBoite().point2.y - _root.GetBoite().point1.y), _root.GetBoite().point2.z - _root.GetBoite().point1.z);
     _roi = l * 1.5;
 
-    //centre de mass de la region incluant tous les particules
+    // centre de mass de la region incluant tous les particules
     PosParticule3D c(_root.GetBoite().point1.x + (_root.GetBoite().point2.x - _root.GetBoite().point1.x) / 2.0, _root.GetBoite().point1.y + (_root.GetBoite().point2.y - _root.GetBoite().point1.y) / 2.0, _root.GetBoite().point1.z + (_root.GetBoite().point2.z - _root.GetBoite().point1.z) / 2.0);
 
-    _root.GetBoite().point1.x = c.x - l/2.0;
-    _root.GetBoite().point2.x = c.x + l/2.0;
-    _root.GetBoite().point1.y = c.y - l/2.0;
-    _root.GetBoite().point2.y = c.y + l/2.0;
-    _root.GetBoite().point1.z = c.z - l/2.0;
-    _root.GetBoite().point2.z = c.z + l/2.0;
+    // _root.GetBoite().point1.x = c.x - l / 2.0;
+    // _root.GetBoite().point2.x = c.x + l / 2.0;
+    // _root.GetBoite().point1.y = c.y - l / 2.0;
+    // _root.GetBoite().point2.y = c.y + l / 2.0;
+    // _root.GetBoite().point1.z = c.z - l / 2.0;
+    // _root.GetBoite().point2.z = c.z + l / 2.0;
+
+    _root.SetBoite(Boite(PosParticule3D(
+                             c.x - l / 2.0,
+                             c.y - l / 2.0,
+                             c.z - l / 2.0),
+                         PosParticule3D(
+                             c.x + l / 2.0,
+                             c.y + l / 2.0,
+                             c.z + l / 2.0)));
 
     std::cout << "Initial particle distribution area\n";
     std::cout << "----------------------------------\n";
@@ -397,15 +431,15 @@ void ModelNBody::InitCollision()//initialise les particules du modèle pour simu
 /**
  * Init3Body initialise le modèle pour simuler un système à trois corps. Chacun des trois corps est positionné avec des masses spécifiques
  * et des positions initiales. Elle ajuste egalement la taille du modèle en fonction de ces corps
-*/
+ */
 void ModelNBody::Init3Body()
 {
-    ResetDim(3, .5);//réinitialisation de la taille du modèle
+    ResetDim(3, .5); // réinitialisation de la taille du modèle
     _root.SetTheta(0.9);
     EtatParticule *st(nullptr);
     EtatAuxiliaire *st_aux(nullptr);
 
-    st = &_pInitial[0];//st pointe vers la première particule du modèle
+    st = &_pInitial[0]; // st pointe vers la première particule du modèle
     st_aux = &_pAux[0];
     st->pos.x = 1;
     st->pos.y = 3;
@@ -433,26 +467,43 @@ void ModelNBody::Init3Body()
     for (int i = 0; i < _num; ++i)
     {
         EtatParticule &st = _pInitial[i];
-        _root.GetBoite().point2.x = std::max(_root.GetBoite().point2.x,st.pos.x);
-        _root.GetBoite().point2.y = std::max(_root.GetBoite().point2.y,st.pos.y);
-        _root.GetBoite().point2.z = std::max(_root.GetBoite().point2.z,st.pos.z);
+        // _root.GetBoite().point2.x = std::max(_root.GetBoite().point2.x, st.pos.x);
+        // _root.GetBoite().point2.y = std::max(_root.GetBoite().point2.y, st.pos.y);
+        // _root.GetBoite().point2.z = std::max(_root.GetBoite().point2.z, st.pos.z);
 
-        _root.GetBoite().point1.y = std::max(_root.GetBoite().point1.y,st.pos.x);
-        _root.GetBoite().point1.y = std::max(_root.GetBoite().point1.y,st.pos.y);
-        _root.GetBoite().point1.y = std::max(_root.GetBoite().point1.y,st.pos.z);
+        // _root.GetBoite().point1.y = std::max(_root.GetBoite().point1.y, st.pos.x);
+        // _root.GetBoite().point1.y = std::max(_root.GetBoite().point1.y, st.pos.y);
+        // _root.GetBoite().point1.y = std::max(_root.GetBoite().point1.y, st.pos.z);
+
+        _root.SetBoite(Boite(PosParticule3D(
+                                 std::min(_root.GetBoite().point1.x, st.pos.x),
+                                 std::min(_root.GetBoite().point1.y, st.pos.y),
+                                 std::min(_root.GetBoite().point1.z, st.pos.z)),
+                             PosParticule3D(
+                                 std::max(_root.GetBoite().point2.x, st.pos.x),
+                                 std::max(_root.GetBoite().point2.y, st.pos.y),
+                                 std::max(_root.GetBoite().point2.z, st.pos.z))));
     }
 
-    double l = 1.05 * std::max(std::max(_root.GetBoite().point2.x - _root.GetBoite().point1.x, _root.GetBoite().point2.y - _root.GetBoite().point1.y),_root.GetBoite().point2.z - _root.GetBoite().point1.z);
-    _roi = l*1.5;
+    double l = 1.05 * std::max(std::max(_root.GetBoite().point2.x - _root.GetBoite().point1.x, _root.GetBoite().point2.y - _root.GetBoite().point1.y), _root.GetBoite().point2.z - _root.GetBoite().point1.z);
+    _roi = l * 1.5;
 
     PosParticule3D c(_root.GetBoite().point1.x + (_root.GetBoite().point2.x - _root.GetBoite().point1.x) / 2.0, _root.GetBoite().point1.y + (_root.GetBoite().point2.y - _root.GetBoite().point1.y) / 2.0, _root.GetBoite().point1.z + (_root.GetBoite().point2.z - _root.GetBoite().point1.z) / 2.0);
 
-    _root.GetBoite().point1.x = c.x - l/2.0;
-    _root.GetBoite().point2.x = c.x + l/2.0;
-    _root.GetBoite().point1.y = c.y - l/2.0;
-    _root.GetBoite().point2.y = c.y + l/2.0;
-    _root.GetBoite().point1.z = c.z - l/2.0;
-    _root.GetBoite().point2.z = c.z + l/2.0;
+    // _root.GetBoite().point1.x = c.x - l / 2.0;
+    // _root.GetBoite().point2.x = c.x + l / 2.0;
+    // _root.GetBoite().point1.y = c.y - l / 2.0;
+    // _root.GetBoite().point2.y = c.y + l / 2.0;
+    // _root.GetBoite().point1.z = c.z - l / 2.0;
+    // _root.GetBoite().point2.z = c.z + l / 2.0;
+    _root.SetBoite(Boite(PosParticule3D(
+                             c.x - l / 2.0,
+                             c.y - l / 2.0,
+                             c.z - l / 2.0),
+                         PosParticule3D(
+                             c.x + l / 2.0,
+                             c.y + l / 2.0,
+                             c.z + l / 2.0)));
 
     std::cout << "Initial particle distribution area\n";
     std::cout << "----------------------------------\n";
@@ -479,7 +530,7 @@ void ModelNBody::CalcBHArea(const ParticuleData &data)
 
         _pointMin.y = std::max(_pointMax.y,s.pos.x);
         _pointMin.y = std::max(_pointMin.y,s.pos.y);
-        _pointMin.y = std::max(_pointMin.y,s.pos.z);   
+        _pointMin.y = std::max(_pointMin.y,s.pos.z);
     }
 
     double l = 1.05 * std::max(std::max(_pointMax.x - _pointMin.x, _pointMax.y - _pointMin.y),_pointMax.z - _pointMin.z);
@@ -505,48 +556,47 @@ void ModelNBody::BuiltTree(const ParticuleData &all)
     // Reset the octree, make sure only particles inside the roi
     // are handled. The renegade ones may live long and prosper
     // outside my simulation
-    _root.Reset(Boite(PosParticule3D(_center.x -_roi, _center.y -_roi, _center.z -_roi),PosParticule3D(_center.x + _roi, _center.y + _roi, _center.z + _roi)));
+    _root.Reset(Boite(PosParticule3D(_center.x - _roi, _center.y - _roi, _center.z - _roi), PosParticule3D(_center.x + _roi, _center.y + _roi, _center.z + _roi)));
 
-    //build the octree
+    // build the octree
     int ct = 0;
-    for(int i = 0; i < _num; ++i)
+    for (int i = 0; i < _num; ++i)
     {
         try
         {
             {
                 /**Pour chaque particule, une instance de ParticleData est créée en utilisant les données de position et auxiliaires de la particule actuelle.
                  * "all" est un objet de type ParticleData qui est passé à la fonction BuiltTree en tant que paramètre. Il contient toutes les données d'état (_pState) et auxiliaires (_pAuxState) de toutes les particules de la simulation.
-                */
+                 */
                 ParticuleData p(&(all._pState[i]), &(all._pAuxState[i]));
 
-                //insert the particle, but only if its inside the roi
-                _root.InsertParticule(p,0);
+                // insert the particle, but only if its inside the roi
+                _root.InsertParticule(p, 0);
                 ++ct;
             }
-
         }
-        catch(const std::exception& exc)
+        catch (const std::exception &exc)
         {
             std::cout << exc.what() << "\n";
             std::cout << "Particle " << i << " (" << all._pState->pos.x << ", " << all._pState->pos.y << ", " << all._pState->pos.z << ") is outside the roi (skipped).\n";
             std::cout << "  roi size   =   " << _roi << "\n";
             std::cout << "  roi center = (" << _center.x << ", " << _center.y << ", " << _center.z << ")\n";
-        }     
+        }
     }
-    //std::cout << ct << " particles added succesfully\n";
+    // std::cout << ct << " particles added succesfully\n";
 
     // compute masses and center of mass on all scales of the tree
     _root.ComputeMassDistribution();
 
-    if (_bVerbose)//si _bVerbose est true, un affichage détaillé de l'arbre est réalisé en utilisant la méthode _root.DumpNode. Cela peut être utile pour le débogage et la visualisation de la structure de l'arbre.
+    if (_bVerbose) // si _bVerbose est true, un affichage détaillé de l'arbre est réalisé en utilisant la méthode _root.DumpNode. Cela peut être utile pour le débogage et la visualisation de la structure de l'arbre.
     {
         std::cout << "Tree Dump\n";
         std::cout << "---------\n";
-        _root.DumpNode(-1,0);
+        _root.DumpNode(-1, 0);
         std::cout << "\n\n";
     }
 
-    //Update the center of mass
+    // Update the center of mass
     _center = _root.GetCenterOfMass();
 }
 
@@ -575,7 +625,6 @@ void ModelNBody::SetVerbose(bool bVerbose)
     _bVerbose = bVerbose;
 }
 
-
 void ModelNBody::SetTheta(double theta)
 {
     _root.SetTheta(theta);
@@ -583,36 +632,36 @@ void ModelNBody::SetTheta(double theta)
 
 /**
  * ModelNBody::Eval, evalue l'accélération des particules à un instant donné dans le temps.
-*/
+ */
 void ModelNBody::Eval(double *a_state, double a_time, double *a_deriv)
 {
     /**Conversion des pointeurs d'état et de dérivées
-     * Les lignes ci-dessous convertissent les pointeurs bruts a_state et a_deriv en pointeurs typés (PODState et PODDeriv). 
+     * Les lignes ci-dessous convertissent les pointeurs bruts a_state et a_deriv en pointeurs typés (PODState et PODDeriv).
      * Ensuite, elle crée une instance de ParticleData appelée all en utilisant les données d'état de toutes les particules et les données auxiliaires de la classe ModelNBody.
-    */
+     */
     EtatParticule *pState = reinterpret_cast<EtatParticule *>(a_state);
-    MajEtat *pDeriv = reinterpret_cast<MajEtat *> (a_deriv);
-    ParticuleData all(pState,_pAux);
+    MajEtat *pDeriv = reinterpret_cast<MajEtat *>(a_deriv);
+    ParticuleData all(pState, _pAux);
 
-    CalcBHArea(all);//calcule l'aire nécessaire pour la méthode de Barnes-Hut en utilisant les données de toutes les particules.
+    CalcBHArea(all); // calcule l'aire nécessaire pour la méthode de Barnes-Hut en utilisant les données de toutes les particules.
     BuiltTree(all);
 
-    #pragma omp parallel for
-        for (int i = 1; i < _num; ++i)
-        {
-            ParticuleData p(&pState[i],&_pAux[i]);
-            PosParticule3D acc = _root.CalcForce(p);
-            pDeriv[i].acceleration.x = acc.x;
-            pDeriv[i].acceleration.y = acc.y;
-            pDeriv[i].acceleration.z = acc.z;
-            pDeriv[i].vitesse.x = pState[i].vitesse.x;
-            pDeriv[i].vitesse.y = pState[i].vitesse.y;
-            pDeriv[i].vitesse.z = pState[i].vitesse.z;
-        }
+#pragma omp parallel for
+    for (int i = 1; i < _num; ++i)
+    {
+        ParticuleData p(&pState[i], &_pAux[i]);
+        PosParticule3D acc = _root.CalcForce(p);
+        pDeriv[i].acceleration.x = acc.x;
+        pDeriv[i].acceleration.y = acc.y;
+        pDeriv[i].acceleration.z = acc.z;
+        pDeriv[i].vitesse.x = pState[i].vitesse.x;
+        pDeriv[i].vitesse.y = pState[i].vitesse.y;
+        pDeriv[i].vitesse.z = pState[i].vitesse.z;
+    }
 
     // Particle 0 is calculated last, because the statistics
     // data relate to this particle. They would be overwritten
-    // otherwise 
+    // otherwise
     _root.StatReset();
     ParticuleData p(&pState[0], &_pAux[0]);
     PosParticule3D acc = _root.CalcForce(p);
@@ -621,12 +670,12 @@ void ModelNBody::Eval(double *a_state, double a_time, double *a_deriv)
     pDeriv[0].acceleration.z = acc.z;
     pDeriv[0].vitesse.x = pState[0].vitesse.x;
     pDeriv[0].vitesse.y = pState[0].vitesse.y;
-    pDeriv[0].vitesse.z = pState[0].vitesse.z;  
+    pDeriv[0].vitesse.z = pState[0].vitesse.z;
 
     // Save Boites for camera orientations
     //  m_camDir.x = pState[0].x - pState[4000].x;
     //  m_camDir.y = pState[0].y - pState[4000].y;
-    //m_camDIr.z = pState[0].z - pState[4000].y;
+    // m_camDIr.z = pState[0].z - pState[4000].y;
     _camPos.x = _root.GetCenterOfMass().x;
     _camPos.y = _root.GetCenterOfMass().y;
     _camPos.z = _root.GetCenterOfMass().z;
