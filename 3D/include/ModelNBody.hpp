@@ -51,6 +51,9 @@ class ModelNBody final : public IModel
         void SetVerbose(bool bVerbose);
         void SetROI(double roi);
         double GetROI() const;
+        OctreeNode CreerOctant(ParticuleData &p);
+
+        //OctreeNode& construireOctant(ParticuleData particule) ;//cette fonction prend une particule et construit un cube le contenant sachant que ce cube ne depasse pas les limites du cube parent
 
     private:
 

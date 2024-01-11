@@ -38,6 +38,7 @@ class OctreeNode
 
         int GetNumRenegades() const;
         int GetNum() const;
+        double GetMass() const;
         const PosParticule3D &GetCenterOfMass() const;
         Boite &GetBoite();
         void SetBoite(Boite boite);
