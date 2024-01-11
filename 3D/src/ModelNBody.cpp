@@ -25,8 +25,8 @@ ModelNBody::ModelNBody() : IModel("N-Body simulation (3D)"),
                            _bVerbose(true)
 {
     OctreeNode::s_gamma = gamma_1;
-    Init();
-    // InitCollision();
+    //Init();
+    InitCollision();
     // Init3Body;
 }
 
