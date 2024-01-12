@@ -22,7 +22,7 @@ std::vector<ParticuleData> OctreeNode::s_renegades;
 il contient seulement un membre _nNumCalc qui représente le nombre total de calculs effectués lors de la simulation*/
 OctreeNode::DebugStat OctreeNode::s_stat = {0};
 
-double OctreeNode::s_gamma = 0; // constante gravitationnelle
+static constexpr double gamma_1 = Constants::Gamma / (Constants::ParsecInMeter * Constants::ParsecInMeter * Constants::ParsecInMeter) * Constants::MassOfSun * (365.25 * 86400) * (365.25 * 86400);
 
 /*s_soft représente le paramètre de softening. Cela ajoute une petite constante pour éviter les singularités
 lorsque deux particules sont très proches. La valeur 0.1*0.1 est utilisée ici, représentant environ 3 années lumière.*/
@@ -43,7 +43,7 @@ double OctreeNode::s_soft = 0.1 * 0.1;
 * Pour un OctreeNode, on va utiliser une boite car pour retrouver l'espace qu'il occupe, il suffit de connaitre les coordonnées d'un sommet et les point2
 */
 OctreeNode::OctreeNode(const Boite &reper_boite, OctreeNode *parent)
-    : _particle(),
+    : //_particle(),
       _mass(0),
       _cm(),
       _boite(reper_boite),
@@ -53,7 +53,12 @@ OctreeNode::OctreeNode(const Boite &reper_boite, OctreeNode *parent)
       _bSubdivided(false)
 {
     // garantie d'initialisation correcte des fils.
-    _noeudFils[0] = _noeudFils[1] = _noeudFils[2] = _noeudFils[3] = _noeudFils[4] = _noeudFils[5] = _noeudFils[6] = _noeudFils[7] = nullptr;
+    //_noeudFils[0] = _noeudFils[1] = _noeudFils[2] = _noeudFils[3] = _noeudFils[4] = _noeudFils[5] = _noeudFils[6] = _noeudFils[7] = nullptr;
+    for(int i = 0; i < 8; ++i)
+    {
+        _noeudFils[i] = nullptr;
+    };
+
 }
 
 // definition des méthodes d'un noeud
@@ -79,7 +84,7 @@ bool OctreeNode::WasTooClose() const // utilisée pour déterminer si le nœud a
     return _bSubdivided;
 }
 
-Boite &OctreeNode::GetBoite() // représente les point2 de la boite englobant du nœud (la boîte englobante).
+Boite OctreeNode::GetBoite() const // représente les point2 de la boite englobant du nœud (la boîte englobante).
 {
     return _boite;
 }
@@ -92,6 +97,12 @@ const PosParticule3D &OctreeNode::GetCenterOfMass() const // renvoie une référ
 {
     return _cm;
 }
+
+/*const ParticuleData &OctreeNode::GetParticule() const
+{
+    return _particle;
+}*/
+
 
 double OctreeNode::GetTheta() const
 {
@@ -191,6 +202,8 @@ void OctreeNode::Reset(const Boite &reperBoite)
     s_renegades.clear();
 }
 
+
+
 /**
  * 3- Définir une fonction pour insérer une particule dans l'arbre
  * 4- Créer une fonction d'insertion principale
@@ -280,35 +293,54 @@ OctreeNode::BoiteAParticule OctreeNode::GetTypeBoite(PosParticule3D const &p) co
  * --> Si c'est une boite nord ouest bas (NWD) les coordonnées du coin inférieur gauche de la boite sont celle du coin inférieur gauche
  * de la boite englobante et les coordonnées représentant les point2, sont les coordonnées du centre de la boite
  */
-OctreeNode *OctreeNode::CreateOctreeNodeNode(BoiteAParticule boiteP)
+OctreeNode *OctreeNode::CreateOctreeNode(BoiteAParticule boiteP)
 {
+    OctreeNode *newNode = nullptr;
+
     switch (boiteP)
     {
-    case SWD:
-        return new OctreeNode(Boite(_boite.point1, _center), this);
-    case SWU:
-        return new OctreeNode(Boite(PosParticule3D(_boite.point1.x, _boite.point1.y, _center.z), PosParticule3D(_center.x, _center.y, _boite.point2.z)), this);
-    case NWD:
-        return new OctreeNode(Boite(PosParticule3D(_boite.point1.x, _center.y, _boite.point1.z), PosParticule3D(_center.x, _boite.point2.y, _center.z)), this);
-    case NWU:
-        return new OctreeNode(Boite(PosParticule3D(_boite.point1.x, _center.y, _center.z), PosParticule3D(_center.x, _boite.point2.y, _boite.point2.z)), this);
-    case SED:
-        return new OctreeNode(Boite(PosParticule3D(_center.x, _boite.point1.y, _boite.point1.z), PosParticule3D(_boite.point2.x, _center.y, _center.z)), this);
-    case SEU:
-        return new OctreeNode(Boite(PosParticule3D(_center.x, _boite.point1.y, _center.z), PosParticule3D(_boite.point2.x, _center.y, _boite.point2.z)), this);
-    case NED:
-        return new OctreeNode(Boite(PosParticule3D(_center.x, _center.y, _boite.point1.z), PosParticule3D(_boite.point2.x, _boite.point2.y, _center.z)), this);
-    case NEU:
-        return new OctreeNode(Boite(_center, _boite.point2), this);
-    
-    default:
+        case SWD:
+            /*return*/ newNode = new OctreeNode(Boite(_boite.point1, _center), this);
+            break;
+        case SWU:
+            /*return*/ newNode = new OctreeNode(Boite(PosParticule3D(_boite.point1.x, _boite.point1.y, _center.z), PosParticule3D(_center.x, _center.y, _boite.point2.z)), this);
+            break;
+        case NWD:
+            /*return*/newNode = new OctreeNode(Boite(PosParticule3D(_boite.point1.x, _center.y, _boite.point1.z), PosParticule3D(_center.x, _boite.point2.y, _center.z)), this);
+            break;
+        case NWU:
+            /*return*/newNode = new OctreeNode(Boite(PosParticule3D(_boite.point1.x, _center.y, _center.z), PosParticule3D(_center.x, _boite.point2.y, _boite.point2.z)), this);
+            break;
+        case SED:
+            /*return*/newNode = new OctreeNode(Boite(PosParticule3D(_center.x, _boite.point1.y, _boite.point1.z), PosParticule3D(_boite.point2.x, _center.y, _center.z)), this);
+            break;
+        case SEU:
+            /*return*/newNode = new OctreeNode(Boite(PosParticule3D(_center.x, _boite.point1.y, _center.z), PosParticule3D(_boite.point2.x, _center.y, _boite.point2.z)), this);
+            break;
+        case NED:
+            /*return*/newNode = new OctreeNode(Boite(PosParticule3D(_center.x, _center.y, _boite.point1.z), PosParticule3D(_boite.point2.x, _boite.point2.y, _center.z)), this);
+            break;
+        case NEU:
+            /*return*/newNode = new OctreeNode(Boite(_center, _boite.point2), this);
+            break;
+        
+        default:
+        {
+            std::stringstream ss;
+            ss << "Can't determine octant!\n";
+            throw std::runtime_error(ss.str().c_str());
+        }
+    }
+
+    if (newNode == nullptr)
     {
         std::stringstream ss;
-        ss << "Can't determine octant!\n";
+        ss << "Failed to create OctreeNode for octant " << static_cast<int>(boiteP) << "\n";
         throw std::runtime_error(ss.str().c_str());
     }
-    }
-};
+
+    return newNode;
+}
 
 /*La fonction DumpNode semble être une fonction utilisée à des fins de débogage (debugging).
 Elle affiche des informations sur le contenu du nœud de l'arbre Barnes-Hut, y compris son quadrant,
@@ -344,8 +376,8 @@ void OctreeNode::ComputeMassDistribution()
     if (_num == 1)
     {
         // on récupère les états de la particule actuel
-        EtatParticule *ps = _particle._pState;
-        EtatAuxiliaire *pa = _particle._pAuxState;
+        EtatParticule *ps = GetBoite().p._pState;
+        EtatAuxiliaire *pa = GetBoite().p._pAuxState;
         assert(ps);
         assert(pa);
 
@@ -363,9 +395,9 @@ void OctreeNode::ComputeMassDistribution()
             {
                 _noeudFils[i]->ComputeMassDistribution();
                 _mass += _noeudFils[i]->_mass;
-                _cm.x += (_noeudFils[i]->_particle._pState->pos.x) * _noeudFils[i]->_mass;
-                _cm.y += (_noeudFils[i]->_particle._pState->pos.y) * _noeudFils[i]->_mass;
-                _cm.z += (_noeudFils[i]->_particle._pState->pos.z) * _noeudFils[i]->_mass;
+                _cm.x += (_noeudFils[i]->GetBoite().p._pState->pos.x) * _noeudFils[i]->_mass;
+                _cm.y += (_noeudFils[i]->GetBoite().p._pState->pos.y) * _noeudFils[i]->_mass;
+                _cm.z += (_noeudFils[i]->GetBoite().p._pState->pos.z) * _noeudFils[i]->_mass;
             }
         }
         _cm.x /= _mass;
@@ -405,7 +437,7 @@ PosParticule3D OctreeNode::CalcAcc(const ParticuleData &p1, const ParticuleData 
     // calcul de l'accélération gravitationnelle
     if (dist > 0)
     {
-        double k = s_gamma * m2 / (dist * dist * dist);
+        double k = gamma_1 * m2 / (dist * dist * dist);
 
         acc.x += k * (x2 - x1);
         acc.y += k * (y2 - y1);
@@ -434,7 +466,7 @@ PosParticule3D OctreeNode::CalcTreeForce(const ParticuleData &p) const
     entre cette particule et la particule p et on incrémente le nombre de calcul*/
     if (_num == 1)
     {
-        acc = CalcAcc(p, _particle);
+        acc = CalcAcc(p, GetBoite().p);
         s_stat._nNumCalc++;
     }
     else // cas où le noeud est subdivisé
@@ -452,7 +484,7 @@ PosParticule3D OctreeNode::CalcTreeForce(const ParticuleData &p) const
         if (cote / dist <= s_theta)
         {
             _bSubdivided = false;
-            k = s_gamma * _mass / (dist * dist * dist);
+            k = gamma_1 * _mass / (dist * dist * dist);
             acc.x = k * (_cm.x - p._pState->pos.x);
             acc.y = k * (_cm.y - p._pState->pos.y);
             acc.z = k * (_cm.z - p._pState->pos.z);
@@ -529,43 +561,79 @@ void OctreeNode::InsertParticule(const ParticuleData &newParticule, int level)
     {
         // determinons le quadrant approprié pour la new particule
         BoiteAParticule cubeDeLaParticule = GetTypeBoite(p1.pos);
+        //std::cout << cubeDeLaParticule << "\n";
         if (!_noeudFils[cubeDeLaParticule]) // si l'octant n'a pas encore un noeud associé, on le crée
-            _noeudFils[cubeDeLaParticule] = CreateOctreeNodeNode(cubeDeLaParticule);
+        {
+                std::cout << "Pas de noeud de ce type dans l'octree on va le créé\n";
+            _noeudFils[cubeDeLaParticule] = CreateOctreeNode(cubeDeLaParticule);
+        }
         _noeudFils[cubeDeLaParticule]->InsertParticule(newParticule, level + 1);
+        std::cout << "Particule insérer\n";
     }
     else if (_num == 1) // le noeud contient déjà une particule
     {
-        assert(IsExternal() || IsRoot());
+        const EtatParticule &p2 = *(GetBoite().p._pState); // récup des coords de la particule déjà présente dans le noeud
 
-        const EtatParticule &p2 = *(_particle._pState); // récup des coords de la particule déjà présente dans le noeud
+        assert(IsExternal() || IsRoot());
+        std::cout << "le noeud ci contient déjà une particule dont la pos est :\n" << "(" << p2.pos.x << "," << p2.pos.y << "," << p2.pos.z << ")\n";
+        std::cout << "le noeud a insérer sa pos est :\n" << "(" << p1.pos.x << "," << p1.pos.y << "," << p1.pos.z << ")\n";
+
+
 
         /**Si la nouvelle particule a les mêmes coordonnées que la particule déjà présente dans le noeud, cela est considéré comme impossible
          * et la nouvelle particule est ajoutée au vecteur de renegates. Sinon le noeud doit etre subdivisé
          */
-        if ((p1.pos.x == p2.pos.x) && (p1.pos.y == p2.pos.y) && (p1.pos.z == p2.pos.z))
+        if (p1.pos.x == p2.pos.x && p1.pos.y == p2.pos.y && p1.pos.z == p2.pos.z)
         {
             s_renegades.push_back(newParticule);
+            std::cout << "Les deux particules ont même position\n";
         }
         else
         {
             BoiteAParticule cubeDeLaParticule = GetTypeBoite(p2.pos); // recup de l'octant dans lequel la particule déjà présente devrait être insérée
             if (_noeudFils[cubeDeLaParticule] == nullptr)
-                _noeudFils[cubeDeLaParticule] = CreateOctreeNodeNode(cubeDeLaParticule);
+                _noeudFils[cubeDeLaParticule] = CreateOctreeNode(cubeDeLaParticule);
 
-            _noeudFils[cubeDeLaParticule]->InsertParticule(_particle, level + 1);
-            _particle.Reset();
+            _noeudFils[cubeDeLaParticule]->InsertParticule(GetBoite().p, level + 1);
+            GetBoite().p.Reset();
 
             cubeDeLaParticule = GetTypeBoite(p1.pos);
             if (!_noeudFils[cubeDeLaParticule])
-                _noeudFils[cubeDeLaParticule] = CreateOctreeNodeNode(cubeDeLaParticule);
+                _noeudFils[cubeDeLaParticule] = CreateOctreeNode(cubeDeLaParticule);
             _noeudFils[cubeDeLaParticule]->InsertParticule(newParticule, level + 1);
+
+            std::cout << "OKKKKKK\n";
         }
     }
     else if (_num == 0)
     {
-        _particle = newParticule;
+        GetBoite().p = newParticule;
     }
     _num++;
+};
+
+void GetOrbitalVelocity(const ParticuleData &p1, const ParticuleData &p2)
+{
+    double x1 = p1._pState->pos.x, y1 = p1._pState->pos.y, z1 = p1._pState->pos.z, m1 = p1._pAuxState->masse;
+    double x2 = p2._pState->pos.x, y2 = p2._pState->pos.y, z2 = p2._pState->pos.z;
+
+    // Calcul de la distance entre les deux particules
+    double r[3], dist;
+    r[0] = x1 - x2;
+    r[1] = y1 - y2;
+    r[2] = z1 - z2;
+
+    // disantance in parsec
+    dist = sqrt((r[0] * r[0]) + (r[1] * r[1]) + (r[2] * r[2]));
+
+    // Calcul de la vitesse orbitale nécessaire
+    double v = sqrt(gamma_1 * m1 / dist);
+
+    // Calcul du vecteur de vitesse perpendiculaire au vecteur de distance
+    double &vx = p2._pState->vitesse.x, &vy = p2._pState->vitesse.y, &vz = p2._pState->vitesse.z;
+    vx = (r[1] / dist) * v;
+    vy = (-r[0] / dist) * v;
+    vz = (-r[2] / dist) * v;
 };
 
 OctreeNode::~OctreeNode()

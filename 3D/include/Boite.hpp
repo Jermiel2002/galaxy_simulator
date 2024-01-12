@@ -21,7 +21,7 @@ class Boite
     public:
         //constructeurs
         Boite();
-        Boite(PosParticule3D point1, PosParticule3D point2);
+        Boite(PosParticule3D point1, PosParticule3D point2, ParticuleData p);
 
         //fonctions
         //bool inBoite(PosParticule3D p, Boite b);

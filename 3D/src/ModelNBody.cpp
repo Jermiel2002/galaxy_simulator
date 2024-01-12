@@ -22,11 +22,11 @@ ModelNBody::ModelNBody() : IModel("N-Body simulation (3D)"),
                            _roi(1),
                            _timeStep(1),
                            _num(0),
-                           _bVerbose(true)
+                           _bVerbose(false)
 {
     OctreeNode::s_gamma = gamma_1;
-    //Init();
-    InitCollision();
+    Init();
+    //InitCollision();
     // Init3Body;
 }
 
@@ -126,8 +126,8 @@ void ModelNBody::ResetDim(int num, double stepsize)
 void ModelNBody::Init()
 {
     // Reset model size
-    ResetDim(5000, 100000);
-    // ResetDim(1,5);
+    //ResetDim(5000, 100000);
+     ResetDim(12,5);
 
     double mass = 0; // utilisée pour stocker la masse totale du système.
 
@@ -148,9 +148,9 @@ void ModelNBody::Init()
      * Plus précisement, chaque anneau est constitué de particules qui se trouvent à une distance fixe du centre du modèle
      * Les particules à l'intérieur d'un même anneau sont positionnées de manière équidistante les unes des autres sur le cercle ou l'anneau
      */
-    for (int k = 0; k < 80; ++k)
+    for (int k = 0; k < 5/*80*/; ++k)
     {
-        for (int l = 0; l < 100; ++l)
+        for (int l = 0; l < /*100*/10; ++l)
         {
             if (ct >= _num) // si le nombre particules inséré plus grand que le nombre de particules défini(_num) dans notre modèle
                 goto hell;

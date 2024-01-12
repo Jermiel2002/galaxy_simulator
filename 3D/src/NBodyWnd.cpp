@@ -15,7 +15,7 @@ NBodyWnd::NBodyWnd(int sz, std::string caption)
     ,_pModel(nullptr)
     ,_pSolver(nullptr)
     ,_camOrient(0)
-    ,_flags(dspBODIES | dspTREE | dspAXIS | dspSTAT | dspVERBOSE)
+    ,_flags(dspBODIES | /*dspTREE |*/ dspAXIS | dspSTAT | dspVERBOSE)
 {}
 
 NBodyWnd::~NBodyWnd()
@@ -65,7 +65,7 @@ void NBodyWnd::Update()
 
     if (_bDumpState && ct % 1000000 == 0)
     {
-        int num = _pModel->GetDim() / 4;
+        int num = _pModel->GetDim() / 8;
         EtatParticule *state = reinterpret_cast<EtatParticule *>(_pSolver->GetState());
         _outfile << _pSolver->GetTime() << ", ";
         for (int i = 0; i < num; ++i)

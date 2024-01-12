@@ -2,6 +2,7 @@
 //--- Implementation -----------------------------------------------------------
 #include "../include/Boite.hpp"
 #include <vector>
+#include "../include/Constants.hpp"
 
 //------------------------------------------------------------------------------
 /**A quoi ressemble un noeud de notre OctreeNode ? c'est ce à quoi répond la class OctreeNode*/
@@ -39,17 +40,20 @@ class OctreeNode
         int GetNumRenegades() const;
         int GetNum() const;
         const PosParticule3D &GetCenterOfMass() const;
-        Boite &GetBoite();
+        Boite GetBoite() const;
+        const ParticuleData &GetParticule() const;
         void SetBoite(Boite boite);
 
         double GetTheta() const;
         void SetTheta(double Theta);
 
         BoiteAParticule GetTypeBoite(PosParticule3D const& p) const;
-        OctreeNode *CreateOctreeNodeNode(BoiteAParticule boiteP);
+        OctreeNode *CreateOctreeNode(BoiteAParticule boiteP);
         void InsertParticule(const ParticuleData &newParticule, int level);
 
         void ComputeMassDistribution();
+        void GetOrbitalVelocity(const ParticuleData &p1, const ParticuleData &p2);
+
 
         PosParticule3D CalcForce(const ParticuleData &p) const;
         void DumpNode(int oct, int level);
@@ -65,7 +69,7 @@ class OctreeNode
     private://l'utilisateur ne doit pas modifié ces variables; pour les consulté ou modifié si nécessaire, on créera une fonction plus tard
         PosParticule3D CalcAcc(const ParticuleData &p1, const ParticuleData &p2) const;
         PosParticule3D CalcTreeForce(const ParticuleData &p) const;
-        ParticuleData _particle;
+        //ParticuleData _particle;
         double _mass;              ///< Mass of all particles inside the node
         PosParticule3D _cm;                 ///< Center of Mass
         Boite _boite;             //La boite contient les coordonnées de l'espace cubique qu'occupe une particule, la boite englobante  
@@ -78,8 +82,8 @@ class OctreeNode
         static std::vector<ParticuleData> s_renegades;
 
 
-    public:
-        static double s_gamma;
+    //public:
+        //static constexpr double gamma_1 = Constants::Gamma / (Constants::ParsecInMeter * Constants::ParsecInMeter * Constants::ParsecInMeter) * Constants::MassOfSun * (365.25 * 86400) * (365.25 * 86400);
 
   
     private:

@@ -11,6 +11,6 @@
 * Une boite dans l'espace tridimensionnel est definie par deux ensembles de coordonnées par convention
 * On a d'une part les coordonnées du coin inférieur gauche de la boite (x, y, z)
 * Et les point2 de la boite d'autre part (largeur, hauteur, profondeur)*/
-Boite::Boite(): point1(0,0,0),point2(1,1,1) {}
+Boite::Boite(): point1(0,0,0),point2(5000,5000,5000),p(ParticuleData()) {}
 
-Boite::Boite(PosParticule3D point11, PosParticule3D point22): point1(point11),point2(point22){}
+Boite::Boite(PosParticule3D point11, PosParticule3D point22, ParticuleData particule): point1(point11),point2(point22),p(particule){}
