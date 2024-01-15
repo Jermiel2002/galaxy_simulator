@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(barnes-hut-simulator)
+project(my-private-galaxy)
 set(CMAKE_CXX_STANDARD 17)
 
 # Need to install the following libraries in the case of Ubuntu:
@@ -41,7 +41,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -ffast-math -fomit-f
 # Set the source files
 set(SOURCES
     src/main.cpp
-    src/BHTree.cpp
+    src/Boite.cpp
+    src/Octree.cpp
     src/IIntegrator.cpp
     src/IntegratorADB5.cpp
     src/IntegratorADB6.cpp
@@ -51,18 +52,19 @@ set(SOURCES
     src/ModelNBody.cpp
     src/NBodyWnd.cpp
     src/SDLWnd.cpp
-    src/Types.cpp
-    src/Vector.cpp)
+    src/Particule3D.cpp
+    src/PosParticule3D.cpp
+  )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
-#target_include_directories(barnes-hut-simulator
+#target_include_directories(my-private-galaxy
 #  PUBLIC
 #    ${PROJECT_SOURCE_DIR}
 #  )
 
-target_link_libraries(barnes-hut-simulator
+target_link_libraries(my-private-galaxy
   PUBLIC
     SDL
     X11
