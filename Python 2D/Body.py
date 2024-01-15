@@ -47,15 +47,6 @@ class Body:
         #add force contribution from body
         self.f = self.f + df
 
-    # def Kenergy(self, dt):
-    #     #compute kinetic energy
-    #     v = self.vHalfStep(dt)
-    #     return 0.5*self.m*np.sqrt(v.dot(v))
-
-    # def Uinteract(self, body):
-    #     #compute interaction potential
-    #     return -G*self.m*body.m/self.distanceTo(body)
-
     def inQuad(self, quad):
         rx, ry = self.r[0], self.r[1]
         qx, qy, qL = quad.r[0], quad.r[1], quad.L
@@ -69,9 +60,5 @@ class Body:
 
     def plot(self):
         rx, ry = self.r[0], self.r[1]
-        #vx, vy = self.v[0], self.v[1]
-        #v = np.sqrt(self.v[0]**2+self.v[1]**2)
         #plot body as point
         plt.scatter(rx, ry, c=self.c)
-        #plot velocity as direction
-        #plt.plot([rx,rx+vx/v], [ry,ry+vy/v], c=self.c)

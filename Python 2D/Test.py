@@ -4,7 +4,7 @@ import matplotlib.animation as animation
 
 #essential imports
 from Body import Body
-from Quad import Quad
+from QuadTree import QuadTree
 from BHTree import BHTree
 from MCgalaxy import generateGalaxy
 
@@ -14,7 +14,7 @@ if __name__ == '__main__':
     r0 = 3 #kpc, scale length of galaxy
     m0 = 50.0 #10^9 solar mass, mass of galaxy
     #simulation space
-    N = 1000 #number of particles
+    N = 100 #number of particles
     L = 15.0 #half length of box, kpc
     #Barnes-Hut simulation resolution
     theta = 1.0
@@ -26,7 +26,7 @@ if __name__ == '__main__':
     #generate 1000 masses in 15kpc box
     bodies = generateGalaxy(r0, m0, N, L)
     #generate Barnes-Hut tree on original grid
-    tree = BHTree(Quad(-L,-L,2*L))
+    tree = BHTree(QuadTree(-L,-L,2*L))
     #populate tree with bodies from list
     for body in bodies:
         tree.insertBody(body)
@@ -47,7 +47,7 @@ if __name__ == '__main__':
         #computation counter
         print("Computing time step "+str(i+1)+"/"+str(steps))
         #generate Barnes-Hut tree on original grid
-        tree = BHTree(Quad(-L,-L,2*L))
+        tree = BHTree(QuadTree(-L,-L,2*L))
         #populate tree with bodies from list
         for body in bodies:
             tree.insertBody(body)
@@ -57,6 +57,7 @@ if __name__ == '__main__':
             tree.applyForce(body, theta, epsilon)
             #take a time step
             body.update(dt)
+        tree.plot()
         #append to list of objects for plotting
         position = np.array([body.r for body in bodies]).T
         scatter, = ax.plot(position[0], position[1], 'k.')

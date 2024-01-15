@@ -25,16 +25,3 @@ def generateGalaxy(r0, m0, N, L):
             #generate body
             bodies.append(Body(m, rx, ry, vx=vx, vy=vy, L=L))
     return bodies
-
-#function: initialize array of bodies in uniform box
-def generateUniform(rho, v0, N, L):
-    #divide total among N masses
-    m = rho*L**2/N
-    #generate N bodies randomly distributed in box
-    bodies = []
-    for i in range(N):
-        vx, vy = np.random.rand()*2*v0-v0, np.random.rand()*2*v0-v0
-        rx, ry = np.random.rand()*2*L-L, np.random.rand()*2*L-L
-        #generate body
-        bodies.append(Body(m, rx, ry, vx=vx, vy=vy, L=L))
-    return bodies

@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #class: a quadrant in space
-class Quad:
+class QuadTree:
     """definition of a quadrant in 2D space"""
     def __init__(self, rx, ry, L):
         #anchor lower left corner
@@ -14,16 +14,16 @@ class Quad:
     #return subquadrants
     def SW(self):
         #return northwest quadrant
-        return Quad(self.r[0], self.r[1], self.L/2.0)
+        return QuadTree(self.r[0], self.r[1], self.L/2.0)
     def SE(self):
         #return northwest quadrant
-        return Quad(self.r[0]+self.L/2.0, self.r[1], self.L/2.0)
+        return QuadTree(self.r[0]+self.L/2.0, self.r[1], self.L/2.0)
     def NW(self):
         #return northwest quadrant
-        return Quad(self.r[0], self.r[1]+self.L/2.0, self.L/2.0)
+        return QuadTree(self.r[0], self.r[1]+self.L/2.0, self.L/2.0)
     def NE(self):
         #return northwest quadrant
-        return Quad(self.r[0]+self.L/2.0, self.r[1]+self.L/2.0, self.L/2.0)
+        return QuadTree(self.r[0]+self.L/2.0, self.r[1]+self.L/2.0, self.L/2.0)
 
     def plot(self):
         #plot quadrant

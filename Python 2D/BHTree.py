@@ -4,7 +4,6 @@
 
 #essential imports
 from Body import Body
-from Quad import Quad
 
 #class: node of Barnes-Hut tree
 class BHTree:
