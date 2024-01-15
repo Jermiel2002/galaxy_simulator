@@ -1,7 +1,7 @@
 #ifndef _INTEGRATOR_RKF4_H
 #define _INTEGRATOR_RKF4_H
 
-#include "../include/IIntegrator.hpp"
+#include "IIntegrator.hpp"
 
 /** \brief Implementation of the simple Euler integration scheme. */
 class IntegratorRKF4 final : public IIntegrator

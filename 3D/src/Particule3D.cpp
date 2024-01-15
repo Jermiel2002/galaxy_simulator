@@ -1,4 +1,4 @@
-#include "../include/Particule3D.hpp"
+#include "Particule3D.hpp"
 #include <iostream>
 #include <string>
 #include <cassert>

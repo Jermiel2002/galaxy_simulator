@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "../include/NBodyWnd.hpp"
+#include "NBodyWnd.hpp"
 
 
 int main(int argc, char **argv)

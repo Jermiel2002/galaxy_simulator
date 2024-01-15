@@ -33,7 +33,7 @@ find_package(OpenGL REQUIRED)
 find_package(OpenMP REQUIRED)
 
 # Add the include directory
-include_directories(include)
+include_directories(3D/include)
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -ffast-math -fomit-framepointers")

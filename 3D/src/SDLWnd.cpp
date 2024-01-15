@@ -1,4 +1,4 @@
-#include "../include/SDLWnd.hpp"
+#include "SDLWnd.hpp"
 
 //--- Standard includes -------------------------------------------------
 #include <stdexcept>

@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "../include/IModel.hpp"
+#include "IModel.hpp"
 
 
 /** \brief Base class for a variety of integration algorithms. */

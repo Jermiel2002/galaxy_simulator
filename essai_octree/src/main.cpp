@@ -4,9 +4,9 @@
 #include <iostream>
 #include <omp.h>
 
-#include "../include/Octree.hpp"
-#include "../include/Boite.hpp"
-//#include "../include/ModelNBody.hpp"
+#include "Octree.hpp"
+#include "Boite.hpp"
+//#include "ModelNBody.hpp"
 
 int main()
 {

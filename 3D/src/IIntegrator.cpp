@@ -1,4 +1,4 @@
-#include "../include/IIntegrator.hpp"
+#include "IIntegrator.hpp"
 
 #include <stdexcept>
 #include <cassert>

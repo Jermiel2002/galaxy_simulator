@@ -1,4 +1,4 @@
-#include "../include/NBodyWnd.hpp"
+#include "NBodyWnd.hpp"
 
 #include <iostream>
 #include <cmath>
@@ -6,9 +6,9 @@
 #include <limits>
 #include <omp.h>
 
-#include "../include/IntegratorRK4.hpp"
-#include "../include/IntegratorRK5.hpp"
-#include "../include/IntegratorADB6.hpp"
+#include "IntegratorRK4.hpp"
+#include "IntegratorRK5.hpp"
+#include "IntegratorADB6.hpp"
 
 NBodyWnd::NBodyWnd(int sz, std::string caption)
     :SDLWindow(sz, sz, 30.0, caption)

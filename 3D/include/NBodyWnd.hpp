@@ -4,10 +4,10 @@
 #include <stdint.h>
 #include <fstream>
 
-#include "../include/SDLWnd.hpp"
-#include "../include/Octree.hpp"
-#include "../include/ModelNBody.hpp"
-#include "../include/IIntegrator.hpp"
+#include "SDLWnd.hpp"
+#include "Octree.hpp"
+#include "ModelNBody.hpp"
+#include "IIntegrator.hpp"
 
 /** \brief Main window of th n-body simulation. */
 class NBodyWnd final : public SDLWindow

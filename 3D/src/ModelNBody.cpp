@@ -1,4 +1,4 @@
-#include "../include/ModelNBody.hpp"
+#include "ModelNBody.hpp"
 
 //--- Standard includes --------------------------------------------------
 #include <cstdlib>
@@ -117,8 +117,14 @@ void ModelNBody::ResetDim(int num, double stepsize)
     _timeStep = stepsize; // Mise à jour du pas de temps de la simulation
 
     // Mise à jour du la boite englobante et du centre du modèle
-    _root.GetBoite().point2.x = _root.GetBoite().point2.y = _root.GetBoite().point2.z = std::numeric_limits<double>::min();
-    _root.GetBoite().point1.x = _root.GetBoite().point1.y = _root.GetBoite().point1.z = std::numeric_limits<double>::max();
+    _root.SetBoite(Boite(PosParticule3D(
+                                     std::numeric_limits<double>::max(),
+                                     std::numeric_limits<double>::max(),
+                                     std::numeric_limits<double>::max()),
+                                 PosParticule3D(
+                                     std::numeric_limits<double>::min(),
+                                     std::numeric_limits<double>::min(),
+                                     std::numeric_limits<double>::min())));
     _center = PosParticule3D(0, 0, 0);
 }
 

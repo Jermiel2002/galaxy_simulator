@@ -1,7 +1,7 @@
 #ifndef _INTEGRATOR_RK4_H
 #define _INTEGRATOR_RK4_H
 
-#include "../include/IIntegrator.hpp"
+#include "IIntegrator.hpp"
 
 
 /** \brief Implementation of the Runge-Kutta 4th order integration scheme. */

@@ -1,4 +1,4 @@
-#include "../include/Octree.hpp"
+#include "Octree.hpp"
 //--- Standard includes --------------------------------------------------------
 #include <cstdio>
 #include <cstring>
@@ -300,7 +300,7 @@ OctreeNode *OctreeNode::CreateOctreeNodeNode(BoiteAParticule boiteP)
         return new OctreeNode(Boite(PosParticule3D(_center.x, _center.y, _boite.point1.z), PosParticule3D(_boite.point2.x, _boite.point2.y, _center.z)), this);
     case NEU:
         return new OctreeNode(Boite(_center, _boite.point2), this);
-    
+
     default:
     {
         std::stringstream ss;

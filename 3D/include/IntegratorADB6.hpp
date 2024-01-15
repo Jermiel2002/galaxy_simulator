@@ -1,7 +1,7 @@
 #ifndef _INTEGRATOR_ADB6_H
 #define _INTEGRATOR_ADB6_H
 
-#include "../include/IIntegrator.hpp"
+#include "IIntegrator.hpp"
 
 
 /** \brief Implementation of the ADB6 integration scheme. */

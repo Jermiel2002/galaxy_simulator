@@ -1,4 +1,4 @@
-#include "../include/Octree.hpp"
+#include "Octree.hpp"
 //--- Standard includes --------------------------------------------------------
 #include <cstdio>
 #include <cstring>

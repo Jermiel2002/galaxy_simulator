@@ -1,4 +1,4 @@
-#include "../include/Boite.hpp"
+#include "Boite.hpp"
 
 /*
 * Ici on va représenté tout ce qu'il faut pour notre espace. Autrement dit, notre espace est constitué d'un ensemble de particule

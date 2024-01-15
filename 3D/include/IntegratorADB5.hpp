@@ -1,8 +1,8 @@
 #ifndef _INTEGRATOR_ADB5_H
 #define _INTEGRATOR_ADB5_H
 
-#include "../include/IIntegrator.hpp"
-#include "../include/IntegratorRK4.hpp"
+#include "IIntegrator.hpp"
+#include "IntegratorRK4.hpp"
 
 /** \brief Implementation of the ADB5 integration scheme. */
 class IntegratorADB5 final : public IIntegrator

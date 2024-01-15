@@ -3,10 +3,10 @@
 
 #include <cmath>
 
-#include "../include/Constants.hpp"
-#include "../include/Octree.hpp"
-#include "../include/Boite.hpp"
-#include "../include/IModel.hpp"
+#include "Constants.hpp"
+#include "Octree.hpp"
+#include "Boite.hpp"
+#include "IModel.hpp"
 
 /** \brief
  * Le problème des N-corps est un problème classique en physique où l'on cherche à simuler le mouvement de N particules sous l'influence mutuelle de leurs forces gravitationnelles.
